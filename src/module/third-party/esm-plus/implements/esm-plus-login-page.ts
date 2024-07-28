@@ -81,10 +81,6 @@ export class EsmPlusLoginPage {
   }
 
   async close() {
-    for (const page of await this.browser.pages()) {
-      await page.close();
-    }
-
     await this.browser.close();
   }
 }

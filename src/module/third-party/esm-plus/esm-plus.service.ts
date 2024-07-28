@@ -1,33 +1,38 @@
-import { CredentialsDTO, ThirdPartyServiceImpl } from '@common';
-import { AppConfigService } from '@core';
-import { Injectable } from '@nestjs/common';
+import { CredentialsDTO, DateConditionDTO, TargetName, ThirdPartyServiceImpl } from '@common';
+import { AppConfigService, ErrorLog } from '@core';
+import { Injectable, Logger } from '@nestjs/common';
 import { AxiosInstance } from 'axios';
 
-import { EsmPlusLoginPage } from './implements';
+import { EsmPlusLoginPage, EsmPlusOrderRequest } from './implements';
 
 @Injectable()
 export class EsmPlusService implements ThirdPartyServiceImpl {
   constructor(private readonly appConfigService: AppConfigService) {}
 
-  async collectOrders(credentials: CredentialsDTO) {
-    const request = await this.login(credentials);
+  async collectOrders(target: TargetName, credentials: CredentialsDTO, condition: DateConditionDTO) {
+    const axios = await this.login(credentials);
 
-    // TODO send api with request
-    console.log(request);
-
-    return null;
-  }
-
-  async transferInvoices<T = any>(credentials: CredentialsDTO): Promise<T> {
-    const request = await this.login(credentials);
-
-    // TODO send api with request
-    console.log(request);
+    const request = new EsmPlusOrderRequest(target, credentials, axios);
+    await request.getSearchAccount();
+    await request.searchNewOrdersAndConfirmOrders(condition);
+    // TODO reset grid
+    // TODO download excel
+    // TODO parse excel to JSON
+    // TODO send to api server
 
     return null;
   }
 
-  async login(credentials: CredentialsDTO): Promise<AxiosInstance | null> {
+  // TODO implement
+  async transferInvoices<T = any>(target: TargetName, credentials: CredentialsDTO): Promise<T> {
+    const axios = await this.login(credentials);
+
+    console.log(axios);
+
+    return null;
+  }
+
+  private async login(credentials: CredentialsDTO): Promise<AxiosInstance | null> {
     const loginPage = new EsmPlusLoginPage();
 
     try {
@@ -42,6 +47,9 @@ export class EsmPlusService implements ThirdPartyServiceImpl {
       const request = await loginPage.createRequest(cookies);
 
       return request;
+    } catch (e) {
+      Logger.error(new ErrorLog(e, EsmPlusService.name, this.login.name));
+      throw e;
     } finally {
       await loginPage.close();
     }

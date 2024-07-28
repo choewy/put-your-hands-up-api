@@ -1,4 +1,5 @@
-import { CredentialsDTO } from '@common/dtos';
+import { TargetName } from '@common/constants';
+import { CredentialsDTO, DateConditionDTO } from '@common/dtos';
 import { HttpStatus } from '@nestjs/common';
 
 export interface ExceptionErrorProps<D = any> {
@@ -13,7 +14,8 @@ export interface ExceptionProps<D = any> {
   error?: ExceptionErrorProps<D>;
 }
 
-export interface ThirdPartyServiceImpl {
-  collectOrders<T = any>(credentials: CredentialsDTO): Promise<T>;
-  transferInvoices<T = any>(credentials: CredentialsDTO): Promise<T>;
-}
+export interface ThirdPartyServiceImpl
+  extends Partial<{
+    collectOrders<V = any>(target: TargetName, credentials: CredentialsDTO, condition: DateConditionDTO): Promise<V>;
+    transferInvoices<T = any>(target: TargetName, credentials: CredentialsDTO): Promise<T>;
+  }> {}

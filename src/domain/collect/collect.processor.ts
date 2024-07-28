@@ -16,15 +16,15 @@ export class CollectProcessor {
     await this.collectService.start(job.data);
 
     try {
-      const orders = await service.collectOrders(job.data.credentials);
+      const orders = await service.collectOrders(job.data.target, job.data.credentials, job.data.condition);
       await this.collectService.callback(true, job.data, orders);
     } catch (e) {
       await this.collectService.callback(false, job.data, null, e);
 
       await job.moveToFailed(e, true);
       await job.finished();
+    } finally {
+      await this.collectService.end(job.data);
     }
-
-    await this.collectService.end(job.data);
   }
 }

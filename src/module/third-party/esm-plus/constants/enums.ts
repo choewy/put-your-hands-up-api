@@ -2,7 +2,12 @@ export enum EsmPlusPageURL {
   Login = 'https://signin.esmplus.com/login',
 }
 
-export enum EsmPlusApiUrl {}
+export enum EsmPlusRequestUrl {
+  GetId = 'https://www.esmplus.com/Escrow/Order/NewOrder?menuCode=TDM105',
+  SearchNewOrders = 'https://www.esmplus.com/Escrow/Order/NewOrderSearch',
+  ConfirmOrders = 'https://www.esmplus.com/Escrow/Order/OrderCheck',
+  ResetGrid = 'https://www.esmplus.com/CommonPopUp/SetGridSetUp',
+}
 
 export enum EsmLoginPageElement {
   TabClassName = '.box__tab',

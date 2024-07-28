@@ -1,4 +1,4 @@
-import { CallbackDTO, CredentialsDTO, TargetName } from '@common';
+import { CallbackDTO, CredentialsDTO, DateConditionDTO, TargetName } from '@common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsInstance, IsNotEmpty } from 'class-validator';
 
@@ -12,6 +12,11 @@ export class CollectDTO {
   @IsNotEmpty()
   @IsInstance(CredentialsDTO)
   credentials: CredentialsDTO;
+
+  @ApiProperty({ type: DateConditionDTO })
+  @IsNotEmpty()
+  @IsInstance(DateConditionDTO)
+  condition: DateConditionDTO;
 
   @ApiProperty({ type: CallbackDTO })
   @IsNotEmpty()

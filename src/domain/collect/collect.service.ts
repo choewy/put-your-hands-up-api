@@ -1,5 +1,5 @@
 import { CredentialsDTO, QueueName, ServiceException, TargetName } from '@common';
-import { AppConfigService, ErrorLog } from '@core';
+import { AppConfigService, ErrorLog, RequestContextService } from '@core';
 import { InjectRedisClient } from '@infra';
 import { EsmPlusService } from '@module';
 import { HttpService } from '@nestjs/axios';
@@ -23,6 +23,7 @@ export class CollectService implements OnModuleDestroy {
     private readonly redis: RedisClientType,
     private readonly httpService: HttpService,
     private readonly appConfigService: AppConfigService,
+    private readonly requestContextService: RequestContextService,
     private readonly esmPlusService: EsmPlusService,
   ) {}
 
@@ -57,6 +58,7 @@ export class CollectService implements OnModuleDestroy {
 
     const o = instanceToPlain(body);
 
+    o.requestId = this.requestContextService.getRequestID();
     o.processId = null;
     o.startAt = null;
 
