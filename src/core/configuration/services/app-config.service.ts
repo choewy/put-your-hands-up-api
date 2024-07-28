@@ -1,11 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { v4 } from 'uuid';
 
 import { NodeEnv } from '../constants';
 
 @Injectable()
 export class AppConfigService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+    this.configService.set('PROCESS_ID', v4());
+  }
+
+  public get processId() {
+    return this.configService.get('PROCESS_ID');
+  }
 
   public get env() {
     return this.configService.get('NODE_ENV') ?? NodeEnv.Local;

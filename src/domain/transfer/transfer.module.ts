@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { ThirdPartyModule } from '@module';
+import { forwardRef, Module } from '@nestjs/common';
 
 import { TransferController } from './transfer.controller';
 
 @Module({
-  imports: [],
+  imports: [forwardRef(() => ThirdPartyModule)],
   controllers: [TransferController],
   providers: [],
 })

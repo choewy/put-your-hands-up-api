@@ -28,6 +28,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(app.get(GloablSerializeInterceptor), app.get(RequestContextInterceptor));
   app.useGlobalPipes(app.get(GlobalValidationPipe));
   app.useGlobalFilters(app.get(GlobalExceptionFilter));
+  app.enableShutdownHooks();
 
   await app.listen(serverConfigService.port, serverConfigService.host);
 }
