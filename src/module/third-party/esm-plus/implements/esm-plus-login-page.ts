@@ -21,8 +21,9 @@ export class EsmPlusLoginPage {
     });
 
     this.page = (await this.browser.pages()).pop() ?? (await this.browser.newPage());
-    this.page.setViewport({ width: 1920, height: 1080 });
-    this.page.goto(EsmPlusPageURL.Login);
+
+    await this.page.setViewport({ width: 1920, height: 1080 });
+    await this.page.goto(EsmPlusPageURL.Login);
   }
 
   async clickTab(tabIndex: EsmPlusLoginTabIndex) {

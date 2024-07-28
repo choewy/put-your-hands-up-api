@@ -2,12 +2,14 @@ import { CredentialsDTO, QueueName, ServiceException, TargetName } from '@common
 import { AppConfigService } from '@core';
 import { InjectRedisClient } from '@infra';
 import { EsmPlusService } from '@module';
+import { HttpService } from '@nestjs/axios';
 import { InjectQueue } from '@nestjs/bull';
-import { Injectable, HttpStatus, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, HttpStatus, OnModuleDestroy, Logger } from '@nestjs/common';
 import { Queue } from 'bull';
 import { instanceToPlain } from 'class-transformer';
 import { DateTime } from 'luxon';
 import { RedisClientType } from 'redis';
+import { lastValueFrom } from 'rxjs';
 
 import { CollectErrorCode, CollectQueueName } from './constants';
 import { CollectDTO } from './dtos';
@@ -19,6 +21,7 @@ export class CollectService implements OnModuleDestroy {
     private readonly queue: Queue,
     @InjectRedisClient()
     private readonly redis: RedisClientType,
+    private readonly httpService: HttpService,
     private readonly appConfigService: AppConfigService,
     private readonly esmPlusService: EsmPlusService,
   ) {}
@@ -81,8 +84,28 @@ export class CollectService implements OnModuleDestroy {
   async end(body: CollectDTO) {
     const key = this.createKey(body.target, body.credentials);
 
-    console.log(key);
-
     await this.redis.del(key);
+  }
+
+  async callback(result: boolean, body: CollectDTO, orders: unknown, error?: unknown) {
+    await lastValueFrom(
+      this.httpService.post(body.callback.url, {
+        result,
+        payload: body.callback.payload,
+        orders,
+        error,
+      }),
+    ).catch((e) => {
+      const error = e?.response?.data ?? e?.errors[0];
+
+      Logger.error({
+        context: CollectService.name,
+        error: {
+          name: error?.name,
+          message: error?.message,
+          stack: error?.stack,
+        },
+      });
+    });
   }
 }
