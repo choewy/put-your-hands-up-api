@@ -26,6 +26,8 @@
       "@infra/*": ["src/infra/*"],
       "@domain": ["src/domain"],
       "@domain/*": ["src/domain/*"],
+      "@module": ["src/module"],
+      "@module/*": ["src/module/*"],
       "@/*": ["src/*"]
     }
   }
