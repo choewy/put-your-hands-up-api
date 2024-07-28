@@ -1,4 +1,11 @@
-import { AppConfigService, ServerConfigService, Swagger } from '@core';
+import {
+  AppConfigService,
+  GloablSerializeInterceptor,
+  GlobalExceptionFilter,
+  GlobalValidationPipe,
+  ServerConfigService,
+  Swagger,
+} from '@core';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
@@ -17,6 +24,9 @@ async function bootstrap() {
   }
 
   app.enableCors(serverConfigService.corsOptions);
+  app.useGlobalInterceptors(app.get(GloablSerializeInterceptor));
+  app.useGlobalPipes(app.get(GlobalValidationPipe));
+  app.useGlobalFilters(app.get(GlobalExceptionFilter));
 
   await app.listen(serverConfigService.port, serverConfigService.host);
 }
