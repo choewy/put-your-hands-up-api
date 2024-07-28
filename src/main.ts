@@ -3,6 +3,7 @@ import {
   GloablSerializeInterceptor,
   GlobalExceptionFilter,
   GlobalValidationPipe,
+  RequestContextInterceptor,
   ServerConfigService,
   Swagger,
 } from '@core';
@@ -24,7 +25,7 @@ async function bootstrap() {
   }
 
   app.enableCors(serverConfigService.corsOptions);
-  app.useGlobalInterceptors(app.get(GloablSerializeInterceptor));
+  app.useGlobalInterceptors(app.get(GloablSerializeInterceptor), app.get(RequestContextInterceptor));
   app.useGlobalPipes(app.get(GlobalValidationPipe));
   app.useGlobalFilters(app.get(GlobalExceptionFilter));
 
