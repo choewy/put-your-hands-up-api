@@ -59,7 +59,6 @@ export class CollectService implements OnModuleDestroy {
 
     o.processId = null;
     o.startAt = null;
-    o.endAt = null;
 
     await this.redis.set(key, JSON.stringify(o, null, 2));
     await this.queue.add(CollectQueueName.CollectOrders, body);
