@@ -14,7 +14,7 @@ export class EsmPlusService implements ThirdPartyServiceImpl {
 
     const request = new EsmPlusOrderRequest(target, credentials, axios);
     await request.getSearchAccount();
-    await request.searchNewOrdersAndConfirmOrders(condition);
+    await request.searchNewOrdersAndConfirmOrders(condition, this.appConfigService.isProduction);
     // TODO reset grid
     // TODO download excel
     // TODO parse excel to JSON

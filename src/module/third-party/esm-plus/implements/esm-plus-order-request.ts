@@ -59,7 +59,7 @@ export class EsmPlusOrderRequest {
     await this.request.post(EsmPlusRequestUrl.ConfirmOrders, body);
   }
 
-  async searchNewOrdersAndConfirmOrders(condition: DateConditionDTO, confirmExecution = false) {
+  async searchNewOrdersAndConfirmOrders(condition: DateConditionDTO, confirmExecution: boolean) {
     while (true) {
       const orderKeys = await this.searchNewOrders(condition);
 
