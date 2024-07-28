@@ -1,4 +1,5 @@
 import { RedisConfigService } from '@core';
+import { BullModule } from '@nestjs/bull';
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { createClient } from 'redis';
 
@@ -10,6 +11,14 @@ export class RedisModule {
     return {
       global: true,
       module: RedisModule,
+      imports: [
+        BullModule.forRootAsync({
+          inject: [RedisConfigService],
+          useFactory(config: RedisConfigService) {
+            return config.redisOptions;
+          },
+        }),
+      ],
       providers: [this.redisClientProvider],
       exports: [this.redisClientProvider],
     };
