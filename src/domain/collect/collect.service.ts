@@ -1,5 +1,5 @@
 import { CredentialsDTO, QueueName, ServiceException, TargetName } from '@common';
-import { AppConfigService } from '@core';
+import { AppConfigService, ErrorLog } from '@core';
 import { InjectRedisClient } from '@infra';
 import { EsmPlusService } from '@module';
 import { HttpService } from '@nestjs/axios';
@@ -96,16 +96,7 @@ export class CollectService implements OnModuleDestroy {
         error,
       }),
     ).catch((e) => {
-      const error = e?.response?.data ?? e?.errors[0];
-
-      Logger.error({
-        context: CollectService.name,
-        error: {
-          name: error?.name,
-          message: error?.message,
-          stack: error?.stack,
-        },
-      });
+      Logger.error(new ErrorLog(e?.response?.data ?? e?.errors[0], CollectService.name, this.callback.name));
     });
   }
 }

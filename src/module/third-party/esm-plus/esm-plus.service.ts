@@ -1,6 +1,6 @@
 import { CredentialsDTO, ThirdPartyServiceImpl } from '@common';
 import { AppConfigService } from '@core';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AxiosInstance } from 'axios';
 
 import { EsmPlusLoginPage } from './implements';
@@ -12,6 +12,7 @@ export class EsmPlusService implements ThirdPartyServiceImpl {
   async collectOrders(credentials: CredentialsDTO) {
     const request = await this.login(credentials);
 
+    // TODO send api with request
     console.log(request);
 
     return null;
@@ -20,6 +21,7 @@ export class EsmPlusService implements ThirdPartyServiceImpl {
   async transferInvoices<T = any>(credentials: CredentialsDTO): Promise<T> {
     const request = await this.login(credentials);
 
+    // TODO send api with request
     console.log(request);
 
     return null;
@@ -40,17 +42,6 @@ export class EsmPlusService implements ThirdPartyServiceImpl {
       const request = await loginPage.createRequest(cookies);
 
       return request;
-    } catch (e) {
-      Logger.error({
-        context: EsmPlusService.name,
-        error: {
-          name: e?.name,
-          message: e?.message,
-          stack: e?.stack,
-        },
-      });
-
-      return null;
     } finally {
       await loginPage.close();
     }
