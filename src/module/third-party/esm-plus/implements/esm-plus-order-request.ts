@@ -1,9 +1,11 @@
-import { CredentialsDTO, DateConditionDTO, TargetName } from '@common';
+import { DateConditionDTO, TargetName } from '@common';
 import { EsmPlusRequestUrl } from '@domain';
 import { AxiosInstance } from 'axios';
 import * as cheerio from 'cheerio';
 
 import { EsmPlusConfirmOrderParam } from './esm-plus-confirm-order-param';
+import { EsmPlusDownloadExcelFileParam } from './esm-plus-download-order-excel-file-param';
+import { EsmPlusResetGridParam } from './esm-plus-reset-grid-param';
 import { EsmPlusSearchAccount } from './esm-plus-search-account';
 import { EsmPlusSearchOrderParam } from './esm-plus-search-orders-param';
 import { EsmPlusSearchNewOrdersResponse } from './interfaces';
@@ -13,11 +15,9 @@ export class EsmPlusOrderRequest {
 
   constructor(
     private readonly target: TargetName,
-    private readonly credentials: CredentialsDTO,
     private readonly request: AxiosInstance,
   ) {}
 
-  // TODO throw custom error
   async getSearchAccount() {
     const { data } = await this.request.get(EsmPlusRequestUrl.GetId);
 
@@ -29,34 +29,20 @@ export class EsmPlusOrderRequest {
       const text = html(option).text();
       const value = html(option).val() as string;
 
-      if (text === '전체') {
-        this.searchAccount.setEsmAccount(value);
-        continue;
-      }
+      switch (true) {
+        case text === '전체':
+          this.searchAccount.setEsmAccount(value);
+          break;
 
-      if (text.startsWith('G_') && text.includes('전체') === false) {
-        this.searchAccount.setGmarketAccount(value);
-        continue;
-      }
+        case text.startsWith('G_') && text.includes('전체') === false:
+          this.searchAccount.setGmarketAccount(value);
+          break;
 
-      if (text.startsWith('A_') && text.includes('전체') === false) {
-        this.searchAccount.setAuctionAccount(value);
+        case text.startsWith('A_') && text.includes('전체') === false:
+          this.searchAccount.setAuctionAccount(value);
+          break;
       }
     }
-  }
-
-  // TODO throw custom error
-  private async searchNewOrders(condition: DateConditionDTO) {
-    const body = new EsmPlusSearchOrderParam(this.target, this.searchAccount, condition);
-    const response = await this.request.post<EsmPlusSearchNewOrdersResponse>(EsmPlusRequestUrl.SearchNewOrders, body);
-
-    return response.data.data.map((order) => [order.OrderNo, 1, this.credentials.account].join(','));
-  }
-
-  // TODO throw custom error
-  private async confirmOrders(orderKeys: string[]) {
-    const body = new EsmPlusConfirmOrderParam(this.searchAccount, orderKeys);
-    await this.request.post(EsmPlusRequestUrl.ConfirmOrders, body);
   }
 
   async searchNewOrdersAndConfirmOrders(condition: DateConditionDTO, confirmExecution: boolean) {
@@ -69,5 +55,55 @@ export class EsmPlusOrderRequest {
 
       await this.confirmOrders(orderKeys);
     }
+  }
+
+  private async searchNewOrders(condition: DateConditionDTO) {
+    const body = new EsmPlusSearchOrderParam(this.target, this.searchAccount, condition);
+    const response = await this.request.post<EsmPlusSearchNewOrdersResponse>(EsmPlusRequestUrl.SearchNewOrders, body).catch((e) => {
+      console.log(e.response?.data);
+      throw new Error('TODO - Axios Error');
+    });
+
+    const orderKeys = new Map<string, string>();
+
+    if (Array.isArray(response?.data?.data) === false) {
+      throw new Error('TODO - Custom Error');
+    }
+
+    for (const order of response.data.data) {
+      if (['선물수락대기'].includes(order.GiftStatusType)) {
+        continue;
+      }
+
+      orderKeys.set(order.OrderNo, order.OrderNo);
+    }
+
+    return Array.from(orderKeys.values());
+  }
+
+  private async confirmOrders(orderKeys: string[]) {
+    const body = new EsmPlusConfirmOrderParam(this.searchAccount, orderKeys);
+    await this.request.post(EsmPlusRequestUrl.ConfirmOrders, body).catch((e) => {
+      console.log(e.response?.data);
+      throw new Error('TODO - Axios Error');
+    });
+  }
+
+  public async resetGrid() {
+    await this.request.post(EsmPlusRequestUrl.ResetGrid, new EsmPlusResetGridParam()).catch((e) => {
+      console.log(e.response?.data);
+      throw new Error('TODO - Axios Error');
+    });
+  }
+
+  public async downloadExcelFile(condition: DateConditionDTO) {
+    const response = await this.request
+      .post(EsmPlusRequestUrl.DownloadExcel, new EsmPlusDownloadExcelFileParam(this.target, this.searchAccount, condition))
+      .catch((e) => {
+        console.log(e.response?.data);
+        throw new Error('TODO - Axios Error');
+      });
+
+    return Buffer.from(response.data);
   }
 }

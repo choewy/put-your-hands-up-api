@@ -10,29 +10,28 @@ export class EsmPlusService implements ThirdPartyServiceImpl {
   constructor(private readonly appConfigService: AppConfigService) {}
 
   async collectOrders(target: TargetName, credentials: CredentialsDTO, condition: DateConditionDTO) {
-    const axios = await this.login(credentials);
-
-    const request = new EsmPlusOrderRequest(target, credentials, axios);
+    const axios = await this.loginAndCreateAxios(credentials);
+    const request = new EsmPlusOrderRequest(target, axios);
     await request.getSearchAccount();
     await request.searchNewOrdersAndConfirmOrders(condition, this.appConfigService.isProduction);
-    // TODO reset grid
-    // TODO download excel
-    // TODO parse excel to JSON
-    // TODO send to api server
+    await request.resetGrid();
 
-    return null;
+    const buffer = await request.downloadExcelFile(condition);
+    const orders = await this.parseOrdersExcelFile(buffer);
+
+    return orders;
   }
 
   // TODO implement
   async transferInvoices<T = any>(target: TargetName, credentials: CredentialsDTO): Promise<T> {
-    const axios = await this.login(credentials);
+    const axios = await this.loginAndCreateAxios(credentials);
 
     console.log(axios);
 
     return null;
   }
 
-  private async login(credentials: CredentialsDTO): Promise<AxiosInstance | null> {
+  private async loginAndCreateAxios(credentials: CredentialsDTO): Promise<AxiosInstance | null> {
     const loginPage = new EsmPlusLoginPage();
 
     try {
@@ -48,10 +47,16 @@ export class EsmPlusService implements ThirdPartyServiceImpl {
 
       return request;
     } catch (e) {
-      Logger.error(new ErrorLog(e, EsmPlusService.name, this.login.name));
+      Logger.error(new ErrorLog(e, EsmPlusService.name, this.loginAndCreateAxios.name));
       throw e;
     } finally {
       await loginPage.close();
     }
+  }
+
+  // TODO
+  private async parseOrdersExcelFile(buffer: Buffer) {
+    console.log(buffer);
+    return [];
   }
 }

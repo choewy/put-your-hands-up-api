@@ -14,8 +14,9 @@ export interface ExceptionProps<D = any> {
   error?: ExceptionErrorProps<D>;
 }
 
-export interface ThirdPartyServiceImpl
+// TODO OrderRow interface, InvoiceRow interface
+export interface ThirdPartyServiceImpl<OrderRow = any, InvoiceRow = any>
   extends Partial<{
-    collectOrders<V = any>(target: TargetName, credentials: CredentialsDTO, condition: DateConditionDTO): Promise<V>;
-    transferInvoices<T = any>(target: TargetName, credentials: CredentialsDTO): Promise<T>;
+    collectOrders(target: TargetName, credentials: CredentialsDTO, condition: DateConditionDTO): Promise<OrderRow>;
+    transferInvoices(target: TargetName, credentials: CredentialsDTO): Promise<InvoiceRow>;
   }> {}

@@ -12,6 +12,7 @@ export interface EsmPlusAccountSelector {
 
 export interface EsmPlusNewOrderData {
   OrderNo: string;
+  GiftStatusType: string;
 }
 
 export interface EsmPlusSearchNewOrdersResponse {

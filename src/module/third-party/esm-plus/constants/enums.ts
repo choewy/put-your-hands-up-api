@@ -7,6 +7,7 @@ export enum EsmPlusRequestUrl {
   SearchNewOrders = 'https://www.esmplus.com/Escrow/Order/NewOrderSearch',
   ConfirmOrders = 'https://www.esmplus.com/Escrow/Order/OrderCheck',
   ResetGrid = 'https://www.esmplus.com/CommonPopUp/SetGridSetUp',
+  DownloadExcel = 'https://www.esmplus.com/Escrow/Delivery/GeneralDeliveryExcel',
 }
 
 export enum EsmLoginPageElement {
