@@ -15,7 +15,7 @@ import { CollectErrorCode, CollectQueueName } from './constants';
 import { CollectDTO } from './dtos';
 
 @Injectable()
-export class CollectService implements OnModuleDestroy {
+export class OrderService implements OnModuleDestroy {
   constructor(
     @InjectQueue(QueueName.Collect)
     private readonly queue: Queue,
@@ -97,7 +97,7 @@ export class CollectService implements OnModuleDestroy {
         error,
       }),
     ).catch((e) => {
-      Logger.error(new ErrorLog(e?.response?.data ?? e?.errors[0], CollectService.name, this.callback.name));
+      Logger.error(new ErrorLog(e?.response?.data ?? e?.errors[0], OrderService.name, this.callback.name));
     });
   }
 }

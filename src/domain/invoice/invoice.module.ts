@@ -1,11 +1,11 @@
 import { ThirdPartyModule } from '@module';
 import { forwardRef, Module } from '@nestjs/common';
 
-import { TransferController } from './transfer.controller';
+import { InvoiceController } from './invoice.controller';
 
 @Module({
   imports: [forwardRef(() => ThirdPartyModule)],
-  controllers: [TransferController],
+  controllers: [InvoiceController],
   providers: [],
 })
-export class TransferModule {}
+export class InvoiceModule {}

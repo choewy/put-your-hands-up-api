@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
-import { CollectModule } from './collect';
-import { TransferModule } from './transfer';
-import { ThirdPartyModule } from '../module/third-party';
+import { InvoiceModule } from './invoice';
+import { OrderModule } from './order';
+import { ThirdPartyModule } from '../module';
 
 @Module({
-  imports: [ThirdPartyModule, CollectModule, TransferModule],
+  imports: [ThirdPartyModule, OrderModule, InvoiceModule],
 })
 export class DomainModule {}

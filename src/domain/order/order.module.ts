@@ -4,13 +4,13 @@ import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bull';
 import { forwardRef, Module } from '@nestjs/common';
 
-import { CollectController } from './collect.controller';
-import { CollectProcessor } from './collect.processor';
-import { CollectService } from './collect.service';
+import { OrderController } from './order.controller';
+import { OrderProcessor } from './order.processor';
+import { OrderService } from './order.service';
 
 @Module({
   imports: [forwardRef(() => ThirdPartyModule), BullModule.registerQueue({ name: QueueName.Collect }), HttpModule],
-  controllers: [CollectController],
-  providers: [CollectService, CollectProcessor],
+  controllers: [OrderController],
+  providers: [OrderService, OrderProcessor],
 })
-export class CollectModule {}
+export class OrderModule {}
