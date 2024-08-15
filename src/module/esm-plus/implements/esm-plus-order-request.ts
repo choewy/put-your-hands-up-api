@@ -1,5 +1,4 @@
-import { DateConditionDTO, TargetName } from '@common';
-import { EsmPlusRequestUrl } from '@domain';
+import { DateConditionDTO } from '@common';
 import { AxiosInstance } from 'axios';
 import * as cheerio from 'cheerio';
 
@@ -9,17 +8,18 @@ import { EsmPlusResetGridParam } from './esm-plus-reset-grid-param';
 import { EsmPlusSearchAccount } from './esm-plus-search-account';
 import { EsmPlusSearchOrderParam } from './esm-plus-search-orders-param';
 import { EsmPlusSearchNewOrdersResponse } from './interfaces';
+import { EsmPlusApiUrl, EsmPlusTarget } from '../constants';
 
 export class EsmPlusOrderRequest {
   private readonly searchAccount = new EsmPlusSearchAccount();
 
   constructor(
-    private readonly target: TargetName,
+    private readonly target: EsmPlusTarget,
     private readonly request: AxiosInstance,
   ) {}
 
   async getSearchAccount() {
-    const { data } = await this.request.get(EsmPlusRequestUrl.GetId);
+    const { data } = await this.request.get(EsmPlusApiUrl.GetId);
 
     const html = cheerio.load(data);
     const select = html('#searchAccount');
@@ -59,7 +59,7 @@ export class EsmPlusOrderRequest {
 
   private async searchNewOrders(condition: DateConditionDTO) {
     const body = new EsmPlusSearchOrderParam(this.target, this.searchAccount, condition);
-    const response = await this.request.post<EsmPlusSearchNewOrdersResponse>(EsmPlusRequestUrl.SearchNewOrders, body).catch((e) => {
+    const response = await this.request.post<EsmPlusSearchNewOrdersResponse>(EsmPlusApiUrl.SearchNewOrders, body).catch((e) => {
       console.log(e.response?.data);
       throw new Error('TODO - Axios Error');
     });
@@ -83,14 +83,14 @@ export class EsmPlusOrderRequest {
 
   private async confirmOrders(orderKeys: string[]) {
     const body = new EsmPlusConfirmOrderParam(this.searchAccount, orderKeys);
-    await this.request.post(EsmPlusRequestUrl.ConfirmOrders, body).catch((e) => {
+    await this.request.post(EsmPlusApiUrl.ConfirmOrders, body).catch((e) => {
       console.log(e.response?.data);
       throw new Error('TODO - Axios Error');
     });
   }
 
   public async resetGrid() {
-    await this.request.post(EsmPlusRequestUrl.ResetGrid, new EsmPlusResetGridParam()).catch((e) => {
+    await this.request.post(EsmPlusApiUrl.ResetGrid, new EsmPlusResetGridParam()).catch((e) => {
       console.log(e.response?.data);
       throw new Error('TODO - Axios Error');
     });
@@ -98,7 +98,7 @@ export class EsmPlusOrderRequest {
 
   public async downloadExcelFile(condition: DateConditionDTO) {
     const response = await this.request
-      .post(EsmPlusRequestUrl.DownloadExcel, new EsmPlusDownloadExcelFileParam(this.target, this.searchAccount, condition))
+      .post(EsmPlusApiUrl.DownloadExcel, new EsmPlusDownloadExcelFileParam(this.target, this.searchAccount, condition))
       .catch((e) => {
         console.log(e.response?.data);
         throw new Error('TODO - Axios Error');

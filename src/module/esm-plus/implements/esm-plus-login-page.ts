@@ -1,9 +1,9 @@
-import { EsmLoginPageElement, EsmPlusLoginTabIndex, EsmPlusPageURL } from '@domain';
 import axios from 'axios';
 import puppeteer, { Browser, Page } from 'puppeteer';
 
 import { EsmPlusLoginFailedError } from './esm-plus-errors';
 import { EsmPlusTimer } from './esm-plus-timer';
+import { EsmLoginPageElement, EsmPlusLoginTabIndex, EsmPlusPageUrl } from '../constants';
 
 export class EsmPlusLoginPage {
   private browser: Browser;
@@ -23,7 +23,7 @@ export class EsmPlusLoginPage {
     this.page = (await this.browser.pages()).pop() ?? (await this.browser.newPage());
 
     await this.page.setViewport({ width: 1920, height: 1080 });
-    await this.page.goto(EsmPlusPageURL.Login);
+    await this.page.goto(EsmPlusPageUrl.Login);
   }
 
   async clickTab(tabIndex: EsmPlusLoginTabIndex) {

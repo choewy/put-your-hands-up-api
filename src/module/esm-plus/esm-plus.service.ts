@@ -1,15 +1,16 @@
-import { CredentialsDTO, DateConditionDTO, TargetName, ThirdPartyServiceImpl } from '@common';
+import { CredentialsDTO, DateConditionDTO } from '@common';
 import { AppConfigService, ErrorLog } from '@core';
 import { Injectable, Logger } from '@nestjs/common';
 import { AxiosInstance } from 'axios';
 
+import { EsmPlusTarget } from './constants';
 import { EsmPlusLoginPage, EsmPlusOrderRequest } from './implements';
 
 @Injectable()
-export class EsmPlusService implements ThirdPartyServiceImpl {
+export class EsmPlusService {
   constructor(private readonly appConfigService: AppConfigService) {}
 
-  async collectOrders(target: TargetName, credentials: CredentialsDTO, condition: DateConditionDTO) {
+  async collectOrders(target: EsmPlusTarget, credentials: CredentialsDTO, condition: DateConditionDTO) {
     const axios = await this.loginAndCreateAxios(credentials);
     const request = new EsmPlusOrderRequest(target, axios);
     await request.getSearchAccount();
@@ -23,7 +24,7 @@ export class EsmPlusService implements ThirdPartyServiceImpl {
   }
 
   // TODO implement
-  async transferInvoices<T = any>(target: TargetName, credentials: CredentialsDTO): Promise<T> {
+  async transferInvoices<T = any>(target: EsmPlusTarget, credentials: CredentialsDTO): Promise<T> {
     const axios = await this.loginAndCreateAxios(credentials);
 
     console.log(axios);

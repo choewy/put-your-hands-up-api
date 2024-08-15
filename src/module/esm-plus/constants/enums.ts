@@ -1,8 +1,13 @@
-export enum EsmPlusPageURL {
+export enum EsmPlusTarget {
+  Gmarket = 'gmarket',
+  Auction = 'auction',
+}
+
+export enum EsmPlusPageUrl {
   Login = 'https://signin.esmplus.com/login',
 }
 
-export enum EsmPlusRequestUrl {
+export enum EsmPlusApiUrl {
   GetId = 'https://www.esmplus.com/Escrow/Order/NewOrder?menuCode=TDM105',
   SearchNewOrders = 'https://www.esmplus.com/Escrow/Order/NewOrderSearch',
   ConfirmOrders = 'https://www.esmplus.com/Escrow/Order/OrderCheck',
