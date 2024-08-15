@@ -1,22 +1,24 @@
-import { QueueName } from '@common';
+import { EsmPlusService } from '@module';
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 
-import { CollectQueueName } from './constants';
-import { CollectDTO } from './dtos';
+import { OrderCollectQueueName, OrderQueueName } from './constants';
+import { CollectEsmPlusOrderDTO } from './dtos';
 import { OrderService } from './order.service';
 
-@Processor(QueueName.Collect)
+@Processor(OrderQueueName)
 export class OrderProcessor {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(
+    private readonly orderService: OrderService,
+    private readonly esmPlusService: EsmPlusService,
+  ) {}
 
-  @Process(CollectQueueName.CollectOrders)
-  async collectOrders(job: Job<CollectDTO>) {
-    const service = this.orderService.getService(job.data.target);
+  @Process(OrderCollectQueueName.CollectOrders)
+  async collectOrders(job: Job<CollectEsmPlusOrderDTO>) {
     await this.orderService.start(job.data);
 
     try {
-      const orders = await service.collectOrders(job.data.target, job.data.credentials, job.data.condition);
+      const orders = await this.esmPlusService.collectOrders(job.data.target, job.data.credentials, job.data.condition);
       await this.orderService.callback(true, job.data, orders);
     } catch (e) {
       await this.orderService.callback(false, job.data, null, e);

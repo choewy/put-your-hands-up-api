@@ -1,4 +1,4 @@
-import { CredentialsDTO, QueueName, ServiceException, TargetName } from '@common';
+import { CredentialsDTO, ServiceException } from '@common';
 import { AppConfigService, ErrorLog, RequestContextService } from '@core';
 import { InjectRedisClient } from '@infra';
 import { EsmPlusService } from '@module';
@@ -11,13 +11,13 @@ import { DateTime } from 'luxon';
 import { RedisClientType } from 'redis';
 import { lastValueFrom } from 'rxjs';
 
-import { CollectErrorCode, CollectQueueName } from './constants';
-import { CollectDTO } from './dtos';
+import { OrderCollectErrorCode, OrderCollectQueueName, OrderQueueName } from './constants';
+import { CollectEsmPlusOrderDTO } from './dtos';
 
 @Injectable()
 export class OrderService implements OnModuleDestroy {
   constructor(
-    @InjectQueue(QueueName.Collect)
+    @InjectQueue(OrderQueueName)
     private readonly queue: Queue,
     @InjectRedisClient()
     private readonly redis: RedisClientType,
@@ -33,27 +33,19 @@ export class OrderService implements OnModuleDestroy {
     }
   }
 
-  public getService(target: TargetName) {
-    switch (target) {
-      case TargetName.Gmarket:
-      case TargetName.Auction:
-        return this.esmPlusService;
-    }
-  }
-
-  private createKey(target: TargetName, credentials: CredentialsDTO) {
-    return [QueueName.Collect, target, [credentials.type, credentials.account].join('_')].join(':');
+  private createKey(credentials: CredentialsDTO) {
+    return [OrderQueueName, [credentials.type, credentials.account].join('_')].join(':');
   }
 
   async has(key: string) {
     return (await this.redis.get(key)) !== null;
   }
 
-  async registCollectOrders(body: CollectDTO) {
-    const key = this.createKey(body.target, body.credentials);
+  async registCollectOrders(body: CollectEsmPlusOrderDTO) {
+    const key = this.createKey(body.credentials);
 
     if (await this.has(key)) {
-      throw new ServiceException(CollectErrorCode.Duplicated, HttpStatus.CONFLICT);
+      throw new ServiceException(OrderCollectErrorCode.Duplicated, HttpStatus.CONFLICT);
     }
 
     const o = instanceToPlain(body);
@@ -63,11 +55,11 @@ export class OrderService implements OnModuleDestroy {
     o.startAt = null;
 
     await this.redis.set(key, JSON.stringify(o, null, 2));
-    await this.queue.add(CollectQueueName.CollectOrders, body);
+    await this.queue.add(OrderCollectQueueName.CollectOrders, body);
   }
 
-  async start(body: CollectDTO) {
-    const key = this.createKey(body.target, body.credentials);
+  async start(body: CollectEsmPlusOrderDTO) {
+    const key = this.createKey(body.credentials);
     const value = await this.redis.get(key);
 
     if (value === null) {
@@ -82,13 +74,13 @@ export class OrderService implements OnModuleDestroy {
     await this.redis.set(key, JSON.stringify(o, null, 2));
   }
 
-  async end(body: CollectDTO) {
-    const key = this.createKey(body.target, body.credentials);
+  async end(body: CollectEsmPlusOrderDTO) {
+    const key = this.createKey(body.credentials);
 
     await this.redis.del(key);
   }
 
-  async callback(result: boolean, body: CollectDTO, orders: unknown, error?: unknown) {
+  async callback(result: boolean, body: CollectEsmPlusOrderDTO, orders: unknown, error?: unknown) {
     await lastValueFrom(
       this.httpService.post(body.callback.url, {
         result,

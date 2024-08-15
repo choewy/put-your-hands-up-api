@@ -1,7 +1,7 @@
-export enum CollectErrorCode {
-  Duplicated = 'COLLECT_DUPLICATED',
+export enum OrderCollectErrorCode {
+  Duplicated = 'ORDER_COLLECT_DUPLICATED',
 }
 
-export enum CollectQueueName {
-  CollectOrders = 'collect:orders',
+export enum OrderCollectQueueName {
+  CollectOrders = 'order:collect',
 }

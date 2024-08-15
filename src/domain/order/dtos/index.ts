@@ -1,1 +1,1 @@
-export * from './collect.dto';
+export * from './collect-esm-plus-order.dto';
