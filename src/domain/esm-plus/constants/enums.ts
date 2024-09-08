@@ -34,9 +34,3 @@ export enum EsmPlusLoginTabIndex {
   Gmarket = 1,
   Auction = 2,
 }
-
-export const EsmPlusloginTabIndexValues = [
-  EsmPlusLoginTabIndex.Master,
-  EsmPlusLoginTabIndex.Gmarket,
-  EsmPlusLoginTabIndex.Auction,
-] as const;

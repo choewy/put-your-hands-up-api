@@ -16,26 +16,25 @@ export class EsmPlusProcessor {
   @Process(EsmPlusQueueName.CollectOrder)
   async collectOrders(job: Job<EsmPlusOrderCollectDTO>) {
     const queueData = job.data;
-    const callbackDTO = new EsmPlusOrderCollectCallbackDTO({ payload: queueData.callback.payload });
+    const queueKey = this.esmPlusQueueService.createCollectOrderQueueKey(queueData);
+    const queueResult = new EsmPlusOrderCollectCallbackDTO({ payload: queueData.callback.payload });
 
-    const queueName = EsmPlusQueueName.CollectOrder;
-    const suffix = [queueData.credentials.type, queueData.credentials.account].join('_');
-    await this.esmPlusQueueService.start(queueName, suffix);
+    await this.esmPlusQueueService.start(queueKey);
 
     try {
       const orders = await this.esmPlusService.collectOrders(queueData);
 
-      callbackDTO.result = true;
-      callbackDTO.data = orders;
+      queueResult.result = true;
+      queueResult.data = orders;
     } catch (e) {
-      callbackDTO.result = false;
-      callbackDTO.error = e;
+      queueResult.result = false;
+      queueResult.error = e;
 
       await job.moveToFailed(e, true);
       await job.finished();
+    } finally {
+      await this.esmPlusQueueService.finish(queueKey);
+      await this.esmPlusQueueService.callback(queueData.callback.url, queueResult);
     }
-
-    await this.esmPlusQueueService.callback(queueData.callback.url, callbackDTO);
-    await this.esmPlusQueueService.finish(queueName, suffix);
   }
 }

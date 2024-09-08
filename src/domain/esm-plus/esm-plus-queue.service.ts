@@ -6,8 +6,8 @@ import { Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
 import { RedisClientType } from 'redis';
 
-import { EsmPlusQueueName, EsmPlusTarget } from './constants';
-import { EsmPlusCredentialsDTO, EsmPlusOrderCollectDTO } from './dtos';
+import { EsmPlusQueueName } from './constants';
+import { EsmPlusOrderCollectDTO } from './dtos';
 
 @Injectable()
 export class EsmPlusQueueService extends AbstractRedisQueueService {
@@ -23,11 +23,15 @@ export class EsmPlusQueueService extends AbstractRedisQueueService {
     super(queue, redis, requestContextService, appConfigService, httpService);
   }
 
-  private createSuffix(target: EsmPlusTarget, credentials: EsmPlusCredentialsDTO) {
-    return `${target}:${credentials.account}_${credentials.type}`;
+  public createCollectOrderQueueKey(body: EsmPlusOrderCollectDTO) {
+    return `${EsmPlusQueueName.CollectOrder}:${body.target}:${body.credentials.account}_${body.credentials.type}`;
+  }
+
+  public createTransferInvoiceQueueKey() {
+    return '';
   }
 
   async registOrderCollect(body: EsmPlusOrderCollectDTO): Promise<void> {
-    this.regist(EsmPlusQueueName.CollectOrder, this.createSuffix(body.target, body.credentials), body);
+    this.regist(EsmPlusQueueName.CollectOrder, this.createCollectOrderQueueKey(body), body);
   }
 }

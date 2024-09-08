@@ -3,7 +3,6 @@ import { AppConfigService, ErrorLog, RequestContextService } from '@core';
 import { HttpService } from '@nestjs/axios';
 import { HttpStatus, Logger, OnModuleDestroy } from '@nestjs/common';
 import { Queue } from 'bull';
-import { instanceToPlain } from 'class-transformer';
 import { DateTime } from 'luxon';
 import { RedisClientType } from 'redis';
 import { lastValueFrom } from 'rxjs';
@@ -26,33 +25,26 @@ export abstract class AbstractRedisQueueService implements OnModuleDestroy {
     }
   }
 
-  private createKey(queueName: string, suffix: string) {
-    return [queueName, suffix].join(':');
-  }
-
   private async has(key: string) {
     return (await this.redis.get(key)) !== null;
   }
 
-  protected async regist<QueuePayload>(queueName: string, suffix: string, payload: QueuePayload) {
-    const key = this.createKey(queueName, suffix);
-
+  protected async regist<QueuePayload>(queueName: string, key: string, payload: QueuePayload) {
     if (await this.has(key)) {
       throw new ServiceException(RedisQueueErrorCode.AlreadyRegistered, HttpStatus.CONFLICT);
     }
 
-    const o = instanceToPlain(payload);
-
-    o.requestId = this.requestContextService.getRequestID();
-    o.processId = null;
-    o.startAt = null;
+    const o = {
+      requestId: this.requestContextService.getRequestID(),
+      processId: null,
+      startAt: null,
+    };
 
     await this.redis.set(key, JSON.stringify(o, null, 2));
     await this.queue.add(queueName, payload, { jobId: o.requestId });
   }
 
-  async start(queueName: string, suffix: string) {
-    const key = this.createKey(queueName, suffix);
+  async start(key: string) {
     const value = (await this.redis.get(key)) ?? null;
 
     if (value === null) {
@@ -67,8 +59,7 @@ export abstract class AbstractRedisQueueService implements OnModuleDestroy {
     await this.redis.set(key, JSON.stringify(o, null, 2));
   }
 
-  async finish(queueName: string, suffix: string) {
-    const key = this.createKey(queueName, suffix);
+  async finish(key: string) {
     await this.redis.del(key);
   }
 
