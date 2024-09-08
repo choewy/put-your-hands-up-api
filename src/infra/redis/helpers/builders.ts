@@ -11,8 +11,8 @@ export const RedisQueueResultDTOBuilder = <CallbackData, CallbackPayload = objec
     @ApiResponseProperty({ type: Boolean })
     result: boolean;
 
-    @ApiResponseProperty({ type: [CallbackDataType] })
-    data: CallbackData[];
+    @ApiResponseProperty({ type: CallbackDataType })
+    data: CallbackData;
 
     @ApiResponseProperty({ type: CallbackPayloadType ?? Object })
     payload: CallbackPayload | null;
