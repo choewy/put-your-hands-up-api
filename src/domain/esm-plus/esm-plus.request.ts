@@ -1,8 +1,8 @@
-import { DateConditionDTO } from '@common';
 import { AxiosInstance } from 'axios';
 import * as cheerio from 'cheerio';
 
 import { EsmPlusApiUrl, EsmPlusTarget } from './constants';
+import { EsmPlusConditionDTO } from './dtos';
 import {
   EsmPlusConfirmOrderParam,
   EsmPlusConfirmOrdersError,
@@ -52,7 +52,7 @@ export class EsmPlusRequest {
     }
   }
 
-  async searchNewOrdersAndConfirmOrders(condition: DateConditionDTO, confirmExecution: boolean) {
+  async searchNewOrdersAndConfirmOrders(condition: EsmPlusConditionDTO, confirmExecution: boolean) {
     while (true) {
       const orderKeys = await this.searchNewOrders(condition);
 
@@ -64,7 +64,7 @@ export class EsmPlusRequest {
     }
   }
 
-  private async searchNewOrders(condition: DateConditionDTO) {
+  private async searchNewOrders(condition: EsmPlusConditionDTO) {
     const body = new EsmPlusSearchOrderParam(this.target, this.searchAccount, condition);
     const response = await this.request.post<EsmPlusSearchNewOrdersResponse>(EsmPlusApiUrl.SearchNewOrders, body).catch((e) => {
       throw new EsmPlusSearchNewOrdersError(e);
@@ -100,7 +100,7 @@ export class EsmPlusRequest {
     });
   }
 
-  public async downloadExcelFile(condition: DateConditionDTO) {
+  public async downloadExcelFile(condition: EsmPlusConditionDTO) {
     const response = await this.request
       .post(EsmPlusApiUrl.DownloadExcel, new EsmPlusDownloadExcelFileParam(this.target, this.searchAccount, condition))
       .catch((e) => {

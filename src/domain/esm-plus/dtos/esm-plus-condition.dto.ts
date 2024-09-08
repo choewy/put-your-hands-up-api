@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDateString, IsNotEmpty } from 'class-validator';
 
-export class DateConditionDTO {
+export class EsmPlusConditionDTO {
   @ApiProperty({ type: String, format: 'date' })
   @IsNotEmpty()
   @IsDateString()

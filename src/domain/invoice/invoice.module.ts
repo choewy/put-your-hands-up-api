@@ -1,10 +1,10 @@
-import { EsmPlusModule, NaverModule } from '@module';
+import { NaverModule } from '@module';
 import { forwardRef, Module } from '@nestjs/common';
 
 import { InvoiceController } from './invoice.controller';
 
 @Module({
-  imports: [forwardRef(() => EsmPlusModule), forwardRef(() => NaverModule)],
+  imports: [forwardRef(() => NaverModule)],
   controllers: [InvoiceController],
   providers: [],
 })

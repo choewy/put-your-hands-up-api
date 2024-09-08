@@ -1,26 +1,25 @@
-import { DateConditionDTO } from '@common';
-
 import { EsmPlusSearchAccount } from './esm-plus-search-account';
 import { EsmPlusTarget } from '../constants';
+import { EsmPlusConditionDTO } from '../dtos';
 
-export class EsmPlusDownloadExcelFileParam {
-  readonly siteGbn = 0;
+export class EsmPlusSearchOrderParam {
+  readonly page = 1;
+  readonly limit = 50;
+  readonly siteGbn = 1;
   readonly searchDateType = 'ODD';
   readonly searchKey = 'ON';
   readonly searchKeyword = '';
-  readonly searchStatus = 0;
-  readonly searchAllYn = 'Y';
-  readonly splitYn = 'yes';
-  readonly searchOrderType = '';
-  readonly searchPaking = false;
   readonly searchDistrType = 'AL';
-  readonly searchDeliveryType = '';
+  readonly searchAllYn = 'N';
   readonly searchTransPolicyType = '';
+  readonly SortFeild = 'PayDate';
+  readonly SortType = 'Desc';
+  readonly start = 0;
   readonly searchSDT!: string;
   readonly searchEDT!: string;
   readonly searchAccount!: string;
 
-  constructor(target: EsmPlusTarget, searchAccount: EsmPlusSearchAccount, condition: DateConditionDTO) {
+  constructor(target: EsmPlusTarget, searchAccount: EsmPlusSearchAccount, condition: EsmPlusConditionDTO) {
     this.searchSDT = condition.startDate;
     this.searchEDT = condition.endDate;
 

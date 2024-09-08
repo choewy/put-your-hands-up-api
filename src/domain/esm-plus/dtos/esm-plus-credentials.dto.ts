@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CredentialsDTO {
+export class EsmPlusCredentialsDTO {
   @ApiProperty({ type: Number })
   @IsNotEmpty()
   @IsInt()

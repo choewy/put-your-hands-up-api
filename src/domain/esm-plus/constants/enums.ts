@@ -1,3 +1,9 @@
+export enum EsmPlusQueueName {
+  Bull = 'esm-plus',
+  CollectOrder = 'esm-plus:order',
+  TransferInvoice = 'esm-plus:invoice',
+}
+
 export enum EsmPlusTarget {
   Gmarket = 'gmarket',
   Auction = 'auction',

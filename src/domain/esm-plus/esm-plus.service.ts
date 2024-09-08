@@ -1,9 +1,9 @@
-import { CredentialsDTO, DateConditionDTO } from '@common';
 import { AppConfigService, ErrorLog } from '@core';
 import { Injectable, Logger } from '@nestjs/common';
 import { AxiosInstance } from 'axios';
 
 import { EsmPlusTarget } from './constants';
+import { EsmPlusCredentialsDTO, EsmPlusOrderCollectDTO } from './dtos';
 import { EsmPlusBrowser } from './esm-plus.browser';
 import { EsmPlusRequest } from './esm-plus.request';
 
@@ -11,7 +11,7 @@ import { EsmPlusRequest } from './esm-plus.request';
 export class EsmPlusService {
   constructor(private readonly appConfigService: AppConfigService) {}
 
-  async collectOrders(target: EsmPlusTarget, credentials: CredentialsDTO, condition: DateConditionDTO) {
+  async collectOrders({ credentials, target, condition }: EsmPlusOrderCollectDTO) {
     const axios = await this.loginAndCreateAxios(credentials);
     const request = new EsmPlusRequest(target, axios);
     await request.getSearchAccount();
@@ -25,7 +25,7 @@ export class EsmPlusService {
   }
 
   // TODO implement
-  async transferInvoices<T = any>(target: EsmPlusTarget, credentials: CredentialsDTO): Promise<T> {
+  async transferInvoices<T = any>(target: EsmPlusTarget, credentials: EsmPlusCredentialsDTO): Promise<T> {
     const axios = await this.loginAndCreateAxios(credentials);
 
     console.log(axios);
@@ -33,7 +33,7 @@ export class EsmPlusService {
     return null;
   }
 
-  private async loginAndCreateAxios(credentials: CredentialsDTO): Promise<AxiosInstance | null> {
+  private async loginAndCreateAxios(credentials: EsmPlusCredentialsDTO): Promise<AxiosInstance | null> {
     const browser = new EsmPlusBrowser();
 
     try {
