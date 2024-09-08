@@ -1,5 +1,5 @@
-import { AppConfigService, ErrorLog } from '@core';
-import { Injectable, Logger } from '@nestjs/common';
+import { AppConfigService } from '@core';
+import { Injectable } from '@nestjs/common';
 import { AxiosInstance } from 'axios';
 
 import { EsmPlusTarget } from './constants';
@@ -13,6 +13,7 @@ export class EsmPlusService {
 
   async collectOrders({ credentials, target, condition }: EsmPlusOrderCollectDTO) {
     const axios = await this.loginAndCreateAxios(credentials);
+
     const request = new EsmPlusRequest(target, axios);
     await request.getSearchAccount();
     await request.searchNewOrdersAndConfirmOrders(condition, this.appConfigService.isProduction);
@@ -24,8 +25,7 @@ export class EsmPlusService {
     return orders;
   }
 
-  // TODO implement
-  async transferInvoices<T = any>(target: EsmPlusTarget, credentials: EsmPlusCredentialsDTO): Promise<T> {
+  async transferInvoices(target: EsmPlusTarget, credentials: EsmPlusCredentialsDTO) {
     const axios = await this.loginAndCreateAxios(credentials);
 
     console.log(axios);
@@ -49,7 +49,6 @@ export class EsmPlusService {
 
       return request;
     } catch (e) {
-      Logger.error(new ErrorLog(e, EsmPlusService.name, this.loginAndCreateAxios.name));
       throw e;
     } finally {
       await browser.close();

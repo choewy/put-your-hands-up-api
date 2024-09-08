@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
 
 export class EsmPlusCallbackDTO {
-  @ApiProperty({ type: String, description: 'callback URL' })
+  @ApiProperty({ type: String, description: 'Callback URL' })
   @IsNotEmpty()
   @IsString()
   url: string;

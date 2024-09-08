@@ -1,9 +1,10 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { EsmPlusOrderCollectDTO, EsmPlusOrderCollectCallbackDTO } from './dtos';
 import { EsmPlusQueueService } from './esm-plus-queue.service';
 
+@ApiTags('ESM Plus')
 @Controller('esm-plus')
 export class EsmPlusController {
   constructor(private readonly esmPlusQueueService: EsmPlusQueueService) {}

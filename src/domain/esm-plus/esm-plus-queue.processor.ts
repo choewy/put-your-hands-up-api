@@ -1,3 +1,4 @@
+import { RedisQueueError } from '@infra';
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 
@@ -7,14 +8,14 @@ import { EsmPlusQueueService } from './esm-plus-queue.service';
 import { EsmPlusService } from './esm-plus.service';
 
 @Processor(EsmPlusQueueName.Bull)
-export class EsmPlusProcessor {
+export class EsmPlusQueueProcessor {
   constructor(
     private readonly esmPlusService: EsmPlusService,
     private readonly esmPlusQueueService: EsmPlusQueueService,
   ) {}
 
   @Process(EsmPlusQueueName.CollectOrder)
-  async collectOrders(job: Job<EsmPlusOrderCollectDTO>) {
+  async onCollectOrders(job: Job<EsmPlusOrderCollectDTO>) {
     const queueData = job.data;
     const queueKey = this.esmPlusQueueService.createCollectOrderQueueKey(queueData);
     const queueResult = new EsmPlusOrderCollectCallbackDTO({ payload: queueData.callback.payload });
@@ -22,15 +23,15 @@ export class EsmPlusProcessor {
     await this.esmPlusQueueService.start(queueKey);
 
     try {
-      const orders = await this.esmPlusService.collectOrders(queueData);
-
+      queueResult.data = await this.esmPlusService.collectOrders(queueData);
       queueResult.result = true;
-      queueResult.data = orders;
     } catch (e) {
-      queueResult.result = false;
-      queueResult.error = e;
+      const queueError = new RedisQueueError(e);
 
-      await job.moveToFailed(e, true);
+      queueResult.error = queueError.toResponse();
+      queueResult.result = false;
+
+      await job.moveToFailed(queueError.toFailedError(), true);
       await job.finished();
     } finally {
       await this.esmPlusQueueService.finish(queueKey);
