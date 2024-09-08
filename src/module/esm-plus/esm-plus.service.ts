@@ -4,7 +4,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { AxiosInstance } from 'axios';
 
 import { EsmPlusTarget } from './constants';
-import { EsmPlusLoginPage, EsmPlusOrderRequest } from './implements';
+import { EsmPlusBrowser } from './esm-plus.browser';
+import { EsmPlusRequest } from './esm-plus.request';
 
 @Injectable()
 export class EsmPlusService {
@@ -12,7 +13,7 @@ export class EsmPlusService {
 
   async collectOrders(target: EsmPlusTarget, credentials: CredentialsDTO, condition: DateConditionDTO) {
     const axios = await this.loginAndCreateAxios(credentials);
-    const request = new EsmPlusOrderRequest(target, axios);
+    const request = new EsmPlusRequest(target, axios);
     await request.getSearchAccount();
     await request.searchNewOrdersAndConfirmOrders(condition, this.appConfigService.isProduction);
     await request.resetGrid();
@@ -33,25 +34,25 @@ export class EsmPlusService {
   }
 
   private async loginAndCreateAxios(credentials: CredentialsDTO): Promise<AxiosInstance | null> {
-    const loginPage = new EsmPlusLoginPage();
+    const browser = new EsmPlusBrowser();
 
     try {
-      await loginPage.create(this.appConfigService.isLocal);
-      await loginPage.clickTab(credentials.type);
-      await loginPage.inputAccount(credentials.account);
-      await loginPage.inputPassword(credentials.password);
-      await loginPage.submitForm();
-      await loginPage.waitFor(10);
+      await browser.create(this.appConfigService.isLocal);
+      await browser.clickTab(credentials.type);
+      await browser.inputAccount(credentials.account);
+      await browser.inputPassword(credentials.password);
+      await browser.submitForm();
+      await browser.waitFor(10);
 
-      const cookies = await loginPage.getCookies();
-      const request = await loginPage.createRequest(cookies);
+      const cookies = await browser.getCookies();
+      const request = await browser.createRequest(cookies);
 
       return request;
     } catch (e) {
       Logger.error(new ErrorLog(e, EsmPlusService.name, this.loginAndCreateAxios.name));
       throw e;
     } finally {
-      await loginPage.close();
+      await browser.close();
     }
   }
 

@@ -1,11 +1,10 @@
 import axios from 'axios';
 import puppeteer, { Browser, Page } from 'puppeteer';
 
-import { EsmPlusLoginFailedError } from './esm-plus-errors';
-import { EsmPlusTimer } from './esm-plus-timer';
-import { EsmLoginPageElement, EsmPlusLoginTabIndex, EsmPlusPageUrl } from '../constants';
+import { EsmLoginPageElement, EsmPlusLoginTabIndex, EsmPlusPageUrl } from './constants';
+import { EsmPlusLoginFailedError } from './implements';
 
-export class EsmPlusLoginPage {
+export class EsmPlusBrowser {
   private browser: Browser;
   private page: Page;
 
@@ -49,7 +48,9 @@ export class EsmPlusLoginPage {
     await formButton.click();
   }
 
-  async waitFor(seconds: number) {
+  async waitFor(waitSeconds: number) {
+    let seconds = waitSeconds;
+
     while (true) {
       if (this.page.url().includes('/login') === false) {
         break;
@@ -63,7 +64,13 @@ export class EsmPlusLoginPage {
         throw new EsmPlusLoginFailedError(errorMessage);
       }
 
-      if ((await EsmPlusTimer(seconds)) < 0) {
+      seconds = await new Promise<number>((resolve) => {
+        setTimeout(() => {
+          resolve(seconds - 1);
+        }, 1_000);
+      });
+
+      if (seconds < 0) {
         throw new EsmPlusLoginFailedError('exceed 10 seconds.');
       }
     }
