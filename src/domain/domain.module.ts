@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 
 import { EsmPlusModule } from './esm-plus';
-import { InvoiceModule } from './invoice';
-import { NaverModule } from '../module';
+import { NaverModule } from './naver';
 
 @Module({
-  imports: [EsmPlusModule, NaverModule, InvoiceModule],
+  imports: [EsmPlusModule, NaverModule],
 })
 export class DomainModule {}
