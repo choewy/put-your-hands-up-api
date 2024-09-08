@@ -42,6 +42,8 @@ export abstract class AbstractRedisQueueService implements OnModuleDestroy {
 
     await this.redis.set(key, JSON.stringify(o, null, 2));
     await this.queue.add(queueName, payload, { jobId: o.requestId });
+
+    return o.requestId;
   }
 
   async start(key: string) {

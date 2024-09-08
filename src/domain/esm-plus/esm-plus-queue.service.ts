@@ -1,3 +1,4 @@
+import { RegistCompleteDTO } from '@common';
 import { AppConfigService, RequestContextService } from '@core';
 import { AbstractRedisQueueService, InjectRedisClient } from '@infra';
 import { HttpService } from '@nestjs/axios';
@@ -31,7 +32,7 @@ export class EsmPlusQueueService extends AbstractRedisQueueService {
     return '';
   }
 
-  async registOrderCollect(body: EsmPlusOrderCollectDTO): Promise<void> {
-    this.regist(EsmPlusQueueName.CollectOrder, this.createCollectOrderQueueKey(body), body);
+  async registOrderCollect(body: EsmPlusOrderCollectDTO): Promise<RegistCompleteDTO> {
+    return new RegistCompleteDTO(await this.regist(EsmPlusQueueName.CollectOrder, this.createCollectOrderQueueKey(body), body));
   }
 }

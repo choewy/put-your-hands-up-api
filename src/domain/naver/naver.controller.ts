@@ -1,5 +1,6 @@
+import { RegistCompleteDTO } from '@common';
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { NaverTransferInvoiceCallbackDTO, NaverTransferInvoiceDTO } from './dtos';
 import { NaverQueueService } from './naver-queue.service';
@@ -11,6 +12,7 @@ export class NaverController {
 
   @Post('invoices')
   @ApiOperation({ summary: 'Naver 송장 전송 Queue 등록' })
+  @ApiOkResponse({ type: RegistCompleteDTO })
   @ApiCreatedResponse({
     type: NaverTransferInvoiceCallbackDTO,
     description: 'Callback URL로 결과 전송',

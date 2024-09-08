@@ -1,3 +1,4 @@
+import { RegistCompleteDTO } from '@common';
 import { AppConfigService, RequestContextService } from '@core';
 import { AbstractRedisQueueService, InjectRedisClient } from '@infra';
 import { HttpService } from '@nestjs/axios';
@@ -31,7 +32,7 @@ export class NaverQueueService extends AbstractRedisQueueService {
     return `${NaverQueueName.TransferInvoice}:${body.credentials.mallId}_${body.credentials.account}`;
   }
 
-  async registTransferInvoice(body: NaverTransferInvoiceDTO): Promise<void> {
-    this.regist(NaverQueueName.TransferInvoice, this.createTransferInvoiceQueueKey(body), body);
+  async registTransferInvoice(body: NaverTransferInvoiceDTO): Promise<RegistCompleteDTO> {
+    return new RegistCompleteDTO(await this.regist(NaverQueueName.TransferInvoice, this.createTransferInvoiceQueueKey(body), body));
   }
 }
