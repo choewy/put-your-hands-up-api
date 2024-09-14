@@ -3,16 +3,16 @@ import * as bcrypt from 'bcrypt';
 import { DateTime } from 'luxon';
 
 import {
-  NaverCredentials,
-  NaverDispatchProductOrderFailInfo,
-  NaverDispatchProductOrdersErrorInfo,
-  NaverDispatchProductOrdersResponse,
-  NaverDispatchProductOrderTarget,
+  NaverCommerceCredentials,
+  NaverCommerceDispatchProductOrderFailInfo,
+  NaverCommerceDispatchProductOrdersErrorInfo,
+  NaverCommerceDispatchProductOrdersResponse,
+  NaverCommerceDispatchProductOrderTarget,
 } from './interfaces';
-import { NaverDeliveryCompanyCode, NaverDeliveryMethod } from '../constants';
+import { NaverCommerceDeliveryCompanyCode, NaverCommerceDeliveryMethod } from '../constants';
 
-export class NaverGetTokenHeader extends AxiosHeaders {
-  constructor(credentials: NaverCredentials) {
+export class NaverCommerceGetTokenHeader extends AxiosHeaders {
+  constructor(credentials: NaverCommerceCredentials) {
     super({});
 
     const basicToken = Buffer.from([credentials.clientId, credentials.clientSecret].join(':')).toString('base64');
@@ -22,7 +22,7 @@ export class NaverGetTokenHeader extends AxiosHeaders {
   }
 }
 
-export class NaverGetTokenRequestBody {
+export class NaverCommerceGetTokenRequestBody {
   readonly type = 'SELLER';
   readonly grant_type = 'client_credentials';
   readonly timestamp = Date.now();
@@ -30,7 +30,7 @@ export class NaverGetTokenRequestBody {
   readonly client_id!: string;
   readonly client_secret_sign!: string;
 
-  constructor(credentials: NaverCredentials) {
+  constructor(credentials: NaverCommerceCredentials) {
     const sign = [credentials.clientId, this.timestamp].join('_');
     const hashed = bcrypt.hashSync(sign, credentials.clientSecret);
 
@@ -40,8 +40,8 @@ export class NaverGetTokenRequestBody {
   }
 }
 
-export class NaverDispatchProductOrderTargetMap extends Map<string, NaverDispatchProductOrderTarget[]> {
-  constructor(targets: NaverDispatchProductOrderTarget[]) {
+export class NaverCommerceDispatchProductOrderTargetMap extends Map<string, NaverCommerceDispatchProductOrderTarget[]> {
+  constructor(targets: NaverCommerceDispatchProductOrderTarget[]) {
     super();
 
     for (const target of targets) {
@@ -60,7 +60,7 @@ export class NaverDispatchProductOrderTargetMap extends Map<string, NaverDispatc
   }
 }
 
-export class NaverDispatchProductOrderRequestHeader extends AxiosHeaders {
+export class NaverCommerceDispatchProductOrderRequestHeader extends AxiosHeaders {
   constructor(accessToken: string) {
     super();
 
@@ -69,31 +69,31 @@ export class NaverDispatchProductOrderRequestHeader extends AxiosHeaders {
   }
 }
 
-export class NaverDispatchProducrOrderRow {
+export class NaverCommerceDispatchProducrOrderRow {
   dispatchDate = DateTime.local().toISO({ includeOffset: true });
 
   productOrderId!: string;
-  deliveryCompanyCode!: NaverDeliveryCompanyCode;
-  deliveryMethod!: NaverDeliveryMethod;
+  deliveryCompanyCode!: NaverCommerceDeliveryCompanyCode;
+  deliveryMethod!: NaverCommerceDeliveryMethod;
   trackingNumber!: string;
 
-  constructor(target: NaverDispatchProductOrderTarget) {
+  constructor(target: NaverCommerceDispatchProductOrderTarget) {
     this.productOrderId = target.productOrderId;
     this.deliveryCompanyCode = target.deliveryCompanyCode;
-    this.deliveryMethod = target.isDirectly ? NaverDeliveryMethod.Direct : NaverDeliveryMethod.Normal;
+    this.deliveryMethod = target.isDirectly ? NaverCommerceDeliveryMethod.Direct : NaverCommerceDeliveryMethod.Normal;
     this.trackingNumber = target.trackingNumber;
   }
 }
 
-export class NaverDispatchProducrOrderRequestBody {
-  dispatchProductOrders: NaverDispatchProducrOrderRow[];
+export class NaverCommerceDispatchProducrOrderRequestBody {
+  dispatchProductOrders: NaverCommerceDispatchProducrOrderRow[];
 
-  constructor(targets: NaverDispatchProductOrderTarget[]) {
-    this.dispatchProductOrders = targets.map((target) => new NaverDispatchProducrOrderRow(target));
+  constructor(targets: NaverCommerceDispatchProductOrderTarget[]) {
+    this.dispatchProductOrders = targets.map((target) => new NaverCommerceDispatchProducrOrderRow(target));
   }
 }
 
-export class NaverDispatchProductOrderSuccessRow {
+export class NaverCommerceDispatchProductOrderSuccessRow {
   readonly orderId: string;
   readonly productOrderId: string;
 
@@ -103,13 +103,13 @@ export class NaverDispatchProductOrderSuccessRow {
   }
 }
 
-export class NaverDispatchProductOrderFailRow {
+export class NaverCommerceDispatchProductOrderFailRow {
   readonly orderId: string;
   readonly productOrderId: string;
   readonly message: string;
   readonly code: string;
 
-  constructor(orderId: string, productOrderInfo: NaverDispatchProductOrderFailInfo) {
+  constructor(orderId: string, productOrderInfo: NaverCommerceDispatchProductOrderFailInfo) {
     this.orderId = orderId;
     this.productOrderId = productOrderInfo.productOrderId;
     this.message = productOrderInfo.message;
@@ -117,28 +117,28 @@ export class NaverDispatchProductOrderFailRow {
   }
 }
 
-export class NaverDispatchProductOrderResult {
-  success: NaverDispatchProductOrderSuccessRow[] = [];
-  failed: NaverDispatchProductOrderFailRow[] = [];
+export class NaverCommerceDispatchProductOrderResult {
+  success: NaverCommerceDispatchProductOrderSuccessRow[] = [];
+  failed: NaverCommerceDispatchProductOrderFailRow[] = [];
 
-  public setResponse(orderId: string, responseData: NaverDispatchProductOrdersResponse) {
+  public setResponse(orderId: string, responseData: NaverCommerceDispatchProductOrdersResponse) {
     for (const productOrderId of responseData.data.successProductOrderIds) {
-      this.success.push(new NaverDispatchProductOrderSuccessRow(orderId, productOrderId));
+      this.success.push(new NaverCommerceDispatchProductOrderSuccessRow(orderId, productOrderId));
     }
 
     for (const productOrderInfo of responseData.data.failProductOrderInfos) {
-      this.failed.push(new NaverDispatchProductOrderFailRow(orderId, productOrderInfo));
+      this.failed.push(new NaverCommerceDispatchProductOrderFailRow(orderId, productOrderInfo));
     }
   }
 
-  public setError(orderId: string, targets: NaverDispatchProductOrderTarget[], e: AxiosError) {
-    const error = e?.response?.data as NaverDispatchProductOrdersErrorInfo;
+  public setError(orderId: string, targets: NaverCommerceDispatchProductOrderTarget[], e: AxiosError) {
+    const error = e?.response?.data as NaverCommerceDispatchProductOrdersErrorInfo;
     const code = error?.code ?? e.code;
     const message = error?.message ?? e.message;
 
     for (const target of targets) {
       this.failed.push(
-        new NaverDispatchProductOrderFailRow(orderId, {
+        new NaverCommerceDispatchProductOrderFailRow(orderId, {
           productOrderId: target.productOrderId,
           code,
           message,
