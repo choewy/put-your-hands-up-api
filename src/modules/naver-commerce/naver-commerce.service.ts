@@ -1,3 +1,4 @@
+import { waitFor } from '@common';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
@@ -73,17 +74,9 @@ export class NaverCommerceService {
         dispatchProductOrderResult.setError(orderId, targets, e);
       }
 
-      await this.waitFor(1);
+      await waitFor(1);
     }
 
     return dispatchProductOrderResult;
-  }
-
-  private async waitFor(seconds = 1) {
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, seconds * 1000);
-    });
   }
 }
