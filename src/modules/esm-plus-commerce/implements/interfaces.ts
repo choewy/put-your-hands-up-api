@@ -1,3 +1,12 @@
+import { DynamicModuleAsyncOptions, DynamicModuleOptions } from '@common';
+
+export interface EsmPlusCommerceModuleOptions extends DynamicModuleOptions {
+  useConfirmOrders: boolean;
+  useVisibleBrowser: boolean;
+}
+
+export interface EsmPlusCommerceModuleAsyncOptions extends DynamicModuleAsyncOptions<Omit<EsmPlusCommerceModuleOptions, 'isGlobal'>> {}
+
 export interface EsmPlusCommerceCredentials {
   account: string;
   password: string;

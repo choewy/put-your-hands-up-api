@@ -1,6 +1,5 @@
 import { waitFor } from '@common';
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 
 import { NaverCommerceApiBaseUrl, NaverCommerceApiPath, NaverCommerceMode } from './constants';
@@ -18,7 +17,6 @@ import {
   NaverCommerceGetTokenResponse,
 } from './implements';
 
-@Injectable()
 export class NaverCommerceService {
   constructor(
     private readonly mode: NaverCommerceMode,

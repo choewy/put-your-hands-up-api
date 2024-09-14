@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import { AxiosInstance } from 'axios';
 
 import { EsmPlusCommerceTarget, EsmPlusLoginTabIndex } from './constants';
@@ -6,14 +5,18 @@ import { EsmPlusCommerceBrowser } from './esm-plus-commerce.browser';
 import { EsmPlusCommerceRequest } from './esm-plus-commerce.request';
 import { EsmPlusCommerceCredentials, EsmPlusCommerceDateCondition } from './implements';
 
-@Injectable()
 export class EsmPlusCommerceService {
+  constructor(
+    private readonly useConfirmOrders: boolean,
+    private readonly useVisibleBrowser: boolean,
+  ) {}
+
   async collectOrders(target: EsmPlusCommerceTarget, credentials: EsmPlusCommerceCredentials, condition: EsmPlusCommerceDateCondition) {
     const axios = await this.loginAndCreateAxios(target, credentials);
 
     const request = new EsmPlusCommerceRequest(target, axios);
     await request.getSearchAccount();
-    await request.searchNewOrdersAndConfirmOrders(condition, false);
+    await request.searchNewOrdersAndConfirmOrders(condition, this.useConfirmOrders);
     await request.resetGrid();
 
     const buffer = await request.downloadExcelFile(condition);
@@ -47,7 +50,7 @@ export class EsmPlusCommerceService {
     const browser = new EsmPlusCommerceBrowser();
 
     try {
-      await browser.create(true);
+      await browser.create(this.useVisibleBrowser);
       await browser.clickTab(this.getTabIndexByTarget(target));
       await browser.inputAccount(credentials.account);
       await browser.inputPassword(credentials.password);
