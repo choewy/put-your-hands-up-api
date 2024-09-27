@@ -2,8 +2,10 @@
 
 !dist/**
 !package.json
+!package-lock.json
 !LICENSE
 
-dist/tsconfig.tsbuildinfo
+dist/tsconfig.build.tsbuildinfo
 dist/main.js
+dist/main.js.map
 dist/main.d.ts
