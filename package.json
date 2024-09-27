@@ -2,9 +2,9 @@
   "name": "@choewy/troublesome-entity",
   "description": "Troublesome Entity",
   "main": "dist/index.js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "choewy",
-  "private": true,
+  "private": false,
   "license": "UNLICENSED",
   "scripts": {
     "prepare": "if npm ls husky > /dev/null 2>&1; then husky; fi",
