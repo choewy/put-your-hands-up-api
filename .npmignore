@@ -1,0 +1,9 @@
+*
+
+!dist/**
+!package.json
+!LICENSE
+
+dist/tsconfig.tsbuildinfo
+dist/main.js
+dist/main.d.ts
