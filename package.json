@@ -2,7 +2,7 @@
   "name": "@choewy/troublesome-entity",
   "description": "Troublesome Entity",
   "main": "dist/index.js",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "author": "choewy",
   "private": true,
   "license": "UNLICENSED",
