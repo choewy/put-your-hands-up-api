@@ -11,14 +11,6 @@ export class TroublesomeDatabaseLogger implements TypeOrmLoggerInterface {
     private readonly contextService?: TroublesomeDatabaseLoggerContextService,
   ) {}
 
-  protected stringifyParams(parameters: unknown[]) {
-    try {
-      return JSON.stringify(parameters);
-    } catch (error) {
-      return parameters;
-    }
-  }
-
   private getContext() {
     if (this.contextService == null) {
       return undefined;
@@ -72,7 +64,7 @@ export class TroublesomeDatabaseLogger implements TypeOrmLoggerInterface {
     }
 
     return {
-      context: this.getContext(),
+      ...this.getContext(),
       comment,
       query,
       parameters,

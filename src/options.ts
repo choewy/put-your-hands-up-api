@@ -8,7 +8,7 @@ import * as entities from './entities';
 
 export const createTroublesomeEntityOptions = <T extends TroublesomeDatabaseLoggerContextService>(
   options: Omit<MysqlConnectionOptions, 'type' | 'entities' | 'namingStrategy' | 'synchronize' | 'dropSchema'>,
-  requestContextService?: T,
+  contextService?: T,
 ): TypeOrmModuleOptions => {
   return {
     ...options,
@@ -17,6 +17,6 @@ export const createTroublesomeEntityOptions = <T extends TroublesomeDatabaseLogg
     entities: Object.values(entities),
     synchronize: false,
     dropSchema: false,
-    logger: new TroublesomeDatabaseLogger(new Logger(), options.logging ?? ['info', 'error', 'warn'], requestContextService),
+    logger: new TroublesomeDatabaseLogger(new Logger('DATABASE'), options.logging ?? ['info', 'error', 'warn'], contextService),
   };
 };
