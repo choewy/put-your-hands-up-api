@@ -1,9 +1,11 @@
+import Decimal from 'decimal.js';
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { FulfillmentEntity } from './fulfillment.entity';
 import { PartnerEntity } from './partner.entity';
 
 import { BoxType, createForeignKeyConstraintName } from '@/constants';
+import { DecimalColumnTransformer } from '@/core';
 
 @Entity({ name: 'box', comment: '박스' })
 export class BoxEntity {
@@ -34,8 +36,8 @@ export class BoxEntity {
   @Column({ type: 'mediumint', unsigned: true, default: 0, comment: '최대 하중(단위 : g)' })
   maxVolume: number;
 
-  @Column({ type: 'tinyint', unsigned: true, default: 0, comment: '체적율(단위 : %, 소수점 올림 처리)' })
-  availableVolumeRatio: number;
+  @Column({ type: 'decimal', precision: 6, scale: 3, default: 0, transformer: new DecimalColumnTransformer(), comment: '체적율' })
+  availableVolumeRatio: Decimal;
 
   @Column({ type: 'smallint', unsigned: true, default: 0, comment: '박스 금액' })
   price: number;
