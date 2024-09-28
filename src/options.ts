@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
@@ -17,6 +16,6 @@ export const createTroublesomeEntityOptions = <T extends TroublesomeDatabaseLogg
     entities: Object.values(entities),
     synchronize: false,
     dropSchema: false,
-    logger: new TroublesomeDatabaseLogger(new Logger('DATABASE'), options.logging ?? ['info', 'error', 'warn'], contextService),
+    logger: new TroublesomeDatabaseLogger(options.logging ?? ['info', 'error', 'warn'], contextService),
   };
 };

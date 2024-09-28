@@ -6,7 +6,6 @@ import { TroublesomeDatabaseLoggerContextService } from './interfaces';
 
 export class TroublesomeDatabaseLogger implements TypeOrmLoggerInterface {
   constructor(
-    private readonly logger: NestLogger,
     private readonly options: TypeOrmLoggerOptions,
     private readonly contextService?: TroublesomeDatabaseLoggerContextService,
   ) {}
@@ -64,7 +63,7 @@ export class TroublesomeDatabaseLogger implements TypeOrmLoggerInterface {
     }
 
     return {
-      ...this.getContext(),
+      ctx: this.getContext(),
       comment,
       query,
       parameters,
@@ -73,8 +72,7 @@ export class TroublesomeDatabaseLogger implements TypeOrmLoggerInterface {
 
   logQuery(query: string, parameters?: unknown[]) {
     if (this.canLogging('info')) {
-      this.logger.debug({
-        level: 'info',
+      NestLogger.debug({
         ...this.extractContextAndQuery(query, parameters),
         executedAt: DateTime.local().toSQL(),
       });
@@ -83,8 +81,7 @@ export class TroublesomeDatabaseLogger implements TypeOrmLoggerInterface {
 
   logQueryError(error: string | Error, query: string, parameters?: unknown[]) {
     if (this.canLogging('error')) {
-      this.logger.error({
-        level: 'error',
+      NestLogger.error({
         ...this.extractContextAndQuery(query, parameters),
         executedAt: DateTime.local().toSQL(),
         error,
@@ -94,8 +91,7 @@ export class TroublesomeDatabaseLogger implements TypeOrmLoggerInterface {
 
   logQuerySlow(latency: number, query: string, parameters?: unknown[]) {
     if (this.canLogging('warn')) {
-      this.logger.warn({
-        level: 'warn',
+      NestLogger.warn({
         ...this.extractContextAndQuery(query, parameters),
         executedAt: DateTime.local().toSQL(),
         latency,
@@ -105,13 +101,13 @@ export class TroublesomeDatabaseLogger implements TypeOrmLoggerInterface {
 
   logSchemaBuild(message: string) {
     if (this.canLogging('schema')) {
-      this.logger.log(message);
+      NestLogger.log(message);
     }
   }
 
   logMigration(message: string) {
     if (this.canLogging('migration')) {
-      this.logger.log(message);
+      NestLogger.log(message);
     }
   }
 
@@ -119,14 +115,14 @@ export class TroublesomeDatabaseLogger implements TypeOrmLoggerInterface {
     switch (level) {
       case 'log':
         if (this.canLogging('log')) {
-          this.logger.log(message);
+          NestLogger.log(message);
         }
 
         break;
 
       case 'warn':
         if (this.canLogging('warn')) {
-          this.logger.warn(message);
+          NestLogger.warn(message);
         }
 
         break;
