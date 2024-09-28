@@ -13,6 +13,8 @@ import {
 
 import { EcommerceChannelEntity } from './e-commerce-channel.entity';
 import { PartnerGroupEntity } from './partner-group.entity';
+import { ProductEntity } from './product.entity';
+import { PurchaserEntity } from './purchaser.entity';
 import { UserEntity } from './user.entity';
 
 import { createForeignKeyConstraintName } from '@/constants';
@@ -32,6 +34,14 @@ export class PartnerEntity {
   @OneToMany(() => UserEntity, (e) => e.partner, { cascade: true })
   @JoinTable()
   users: UserEntity[];
+
+  @OneToMany(() => ProductEntity, (e) => e.partner, { cascade: true })
+  @JoinTable()
+  products: ProductEntity[];
+
+  @OneToMany(() => PurchaserEntity, (e) => e.partner, { cascade: true })
+  @JoinTable()
+  purchasers: PurchaserEntity[];
 
   @OneToMany(() => EcommerceChannelEntity, (e) => e.partner, { cascade: true })
   @JoinTable()

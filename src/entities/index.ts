@@ -2,13 +2,14 @@ export * from './partner-group.entity';
 export * from './partner.entity';
 export * from './purchaser.entity';
 
-export * from './e-commerce-platform.entity';
-export * from './e-commerce-channel.entity';
-
 export * from './fulfillment.entity';
 export * from './fulfillment-inventory.entity';
 export * from './fulfillment-delivery-company-setting.entity';
 
+export * from './e-commerce-platform.entity';
+export * from './e-commerce-channel.entity';
+
+export * from './box.entity';
 export * from './location.entity';
 export * from './consigner.entity';
 export * from './delivery-company.entity';

@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
+import { BoxEntity } from './box.entity';
 import { FulfillmentDeliveryCompanySettingEntity } from './fulfillment-delivery-company-setting.entity';
 import { LocationEntity } from './location.entity';
 import { UserEntity } from './user.entity';
@@ -23,6 +24,10 @@ export class FulfillmentEntity {
   @OneToMany(() => LocationEntity, (e) => e.fulfillment, { cascade: true })
   @JoinTable()
   locations: LocationEntity[];
+
+  @OneToMany(() => BoxEntity, (e) => e.fulfillment, { cascade: true })
+  @JoinTable()
+  boxes: BoxEntity[];
 
   @CreateDateColumn({ type: 'timestamp', comment: '생성일시' })
   readonly createdAt: Date;

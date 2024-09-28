@@ -1,8 +1,21 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
+import { PartnerEntity } from './partner.entity';
 import { ProductDetailEntity } from './product-detail.entity';
+import { PurchaserEntity } from './purchaser.entity';
 
-import { ProductTemperature, ProductType, ProductUnit } from '@/constants';
+import { createForeignKeyConstraintName, ProductTemperature, ProductType, ProductUnit } from '@/constants';
 
 @Entity({ name: 'product', comment: '품목' })
 export class ProductEntity {
@@ -38,6 +51,14 @@ export class ProductEntity {
 
   @Column({ type: 'int', unsigned: true, default: 0, comment: '판매가' })
   salePrice: number;
+
+  @ManyToOne(() => PartnerEntity, (e) => e.products, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('product', 'partner', 'id') })
+  partner: PartnerEntity | null;
+
+  @ManyToOne(() => PurchaserEntity, (e) => e.products, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('product', 'purchaser', 'id') })
+  purchaser: PurchaserEntity | null;
 
   @OneToMany(() => ProductDetailEntity, (e) => e.setProduct, { cascade: true })
   @JoinTable()

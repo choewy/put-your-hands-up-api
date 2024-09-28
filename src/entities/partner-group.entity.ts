@@ -1,7 +1,6 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { PartnerEntity } from './partner.entity';
-import { PurchaserEntity } from './purchaser.entity';
 import { UserEntity } from './user.entity';
 
 @Entity({ name: 'partner_group', comment: '고객사 그룹' })
@@ -19,10 +18,6 @@ export class PartnerGroupEntity {
   @OneToMany(() => PartnerEntity, (e) => e.partnerGroup, { cascade: true })
   @JoinTable()
   partners: PartnerEntity[];
-
-  @OneToMany(() => PurchaserEntity, (e) => e.partnerGroup, { cascade: true })
-  @JoinTable()
-  purchasers: PurchaserEntity[];
 
   @CreateDateColumn({ type: 'timestamp', comment: '생성일시' })
   readonly createdAt: Date;

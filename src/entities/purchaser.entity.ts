@@ -1,6 +1,18 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-import { PartnerGroupEntity } from './partner-group.entity';
+import { PartnerEntity } from './partner.entity';
+import { ProductEntity } from './product.entity';
 
 import { createForeignKeyConstraintName } from '@/constants';
 
@@ -45,9 +57,13 @@ export class PurchaserEntity {
   @Column({ type: 'varchar', length: 255, default: null, comment: '비고' })
   description: string | null;
 
-  @ManyToOne(() => PartnerGroupEntity, (e) => e.purchasers, { onDelete: 'CASCADE' })
-  @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('purchaser', 'partner_group', 'id') })
-  partnerGroup: PartnerGroupEntity;
+  @ManyToOne(() => PartnerEntity, (e) => e.purchasers, { onDelete: 'CASCADE' })
+  @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('purchaser', 'partner', 'id') })
+  partner: PartnerEntity;
+
+  @OneToMany(() => ProductEntity, (e) => e.purchaser, { cascade: ['remove', 'soft-remove'] })
+  @JoinTable()
+  products: ProductEntity[];
 
   @CreateDateColumn({ type: 'timestamp', comment: '생성일시' })
   readonly createdAt: Date;

@@ -15,8 +15,8 @@ export enum ProductUnit {
 }
 
 export enum ProductTemperature {
-  Room = '실온',
-  Refrigerator = '냉장/냉동',
+  Ambient = '실온',
+  RefrigeratedOrFrozen = '냉장/냉동',
 }
 
 export enum OrderStatus {
@@ -41,4 +41,10 @@ export enum LockTarget {}
 export enum InventoryStatus {
   Availabled = 1,
   Disabled = 2,
+}
+
+export enum BoxType {
+  Ambient = '실온',
+  Refrigerated = '냉장',
+  Frozen = '냉동',
 }
