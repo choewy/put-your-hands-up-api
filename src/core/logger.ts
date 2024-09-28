@@ -63,7 +63,7 @@ export class TroublesomeDatabaseLogger implements TypeOrmLoggerInterface {
     }
 
     return {
-      ctx: this.getContext(),
+      ...this.getContext(),
       comment,
       query,
       parameters,
