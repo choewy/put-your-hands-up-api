@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 
 import { DeliveryCompanyEntity } from './delivery-company.entity';
+import { LocationEntity } from './location.entity';
 import { UserEntity } from './user.entity';
 
 import { createForeignKeyConstraintName } from '@/constants';
@@ -31,6 +32,10 @@ export class FulfillmentCenterEntity {
   @OneToMany(() => UserEntity, (e) => e.fulfillmentCenter, { cascade: true })
   @JoinTable()
   users: UserEntity[];
+
+  @OneToMany(() => LocationEntity, (e) => e.fulfillmentCenter, { cascade: true })
+  @JoinTable()
+  locations: LocationEntity[];
 
   @CreateDateColumn({ type: 'timestamp', comment: '생성일시' })
   readonly createdAt: Date;

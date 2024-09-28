@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { OrderClaimEntity } from './order-claim.entity';
+import { ClaimEntity } from './claim.entity';
 import { OrderEntity } from './order.entity';
 import { ProductEntity } from './product.entity';
 
@@ -31,9 +31,9 @@ export class OrderProductEntity {
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('order_product', 'product', 'id') })
   product: ProductEntity | null;
 
-  @OneToMany(() => OrderClaimEntity, (e) => e.orderProduct, { cascade: true })
+  @OneToMany(() => ClaimEntity, (e) => e.orderProduct, { cascade: true })
   @JoinTable()
-  orderClaims: OrderClaimEntity[];
+  claims: ClaimEntity[];
 
   @CreateDateColumn({ type: 'timestamp', comment: '생성일시' })
   readonly createdAt: Date;

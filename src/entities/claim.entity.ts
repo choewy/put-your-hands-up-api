@@ -4,19 +4,22 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { OrderProductEntity } from './order-product.entity';
 import { OrderEntity } from './order.entity';
+import { RecallEntity } from './recall.entity';
 
 import { createForeignKeyConstraintName, OrderClaimType } from '@/constants';
 
-@Entity({ name: 'order_claim', comment: '주문 클레임' })
-export class OrderClaimEntity {
-  @PrimaryGeneratedColumn({ type: 'int', unsigned: true, comment: '주문 클레임 PK' })
+@Entity({ name: 'claim', comment: '클레임' })
+export class ClaimEntity {
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true, comment: '클레임 PK' })
   readonly id: number;
 
   @Column({ type: 'tinyint', unsigned: true, comment: '클레임 종류' })
@@ -28,13 +31,17 @@ export class OrderClaimEntity {
   @Column({ type: 'varchar', length: 1024, comment: '클레임 상세 사유' })
   reasonDetail: string;
 
-  @ManyToOne(() => OrderEntity, (e) => e.orderClaims, { onDelete: 'CASCADE' })
+  @ManyToOne(() => OrderEntity, (e) => e.claims, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('order_claim', 'order', 'id') })
   order: OrderEntity;
 
-  @ManyToOne(() => OrderProductEntity, (e) => e.orderClaims, { onDelete: 'CASCADE' })
+  @ManyToOne(() => OrderProductEntity, (e) => e.claims, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('order_claim', 'order_product', 'id') })
   orderProduct: OrderProductEntity;
+
+  @OneToMany(() => RecallEntity, (e) => e.claim, { cascade: true })
+  @JoinTable()
+  recalls: RecallEntity;
 
   @CreateDateColumn({ type: 'timestamp', comment: '생성일시' })
   readonly createdAt: Date;

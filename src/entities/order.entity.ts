@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { OrderClaimEntity } from './order-claim.entity';
+import { ClaimEntity } from './claim.entity';
 import { OrderProductEntity } from './order-product.entity';
 
 import { OrderStatus } from '@/constants';
@@ -41,9 +41,9 @@ export class OrderEntity {
   @JoinTable()
   orderProducts: OrderProductEntity[];
 
-  @OneToMany(() => OrderClaimEntity, (e) => e.order, { cascade: true })
+  @OneToMany(() => ClaimEntity, (e) => e.order, { cascade: true })
   @JoinTable()
-  orderClaims: OrderClaimEntity[];
+  claims: ClaimEntity[];
 
   @CreateDateColumn({ type: 'timestamp', comment: '생성일시' })
   readonly createdAt: Date;

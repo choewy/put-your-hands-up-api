@@ -29,3 +29,9 @@ export enum OrderClaimType {
   Exchange = 0,
   Return = 1,
 }
+
+export enum RecallStatus {
+  Wating = 0,
+  Complete = 1,
+  Cancel = 2,
+}
