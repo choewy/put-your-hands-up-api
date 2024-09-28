@@ -2,13 +2,13 @@ import { Logger as NestLogger } from '@nestjs/common';
 import { DateTime } from 'luxon';
 import { LogLevel, Logger as TypeOrmLoggerInterface, LoggerOptions as TypeOrmLoggerOptions } from 'typeorm';
 
-import { TroublesomeDatabaseLoggerRequestContextService } from './interfaces';
+import { TroublesomeDatabaseLoggerContextService } from './interfaces';
 
 export class TroublesomeDatabaseLogger implements TypeOrmLoggerInterface {
   constructor(
     private readonly logger: NestLogger,
     private readonly options: TypeOrmLoggerOptions,
-    private readonly requestContextService?: TroublesomeDatabaseLoggerRequestContextService,
+    private readonly contextService?: TroublesomeDatabaseLoggerContextService,
   ) {}
 
   protected stringifyParams(parameters: unknown[]) {
@@ -20,17 +20,17 @@ export class TroublesomeDatabaseLogger implements TypeOrmLoggerInterface {
   }
 
   private getContext() {
-    if (this.requestContextService == null) {
+    if (this.contextService == null) {
       return undefined;
     }
 
     const context = {
-      requestId: this.requestContextService.getRequestId() ?? undefined,
+      requestId: this.contextService.getRequestId() ?? undefined,
       className: undefined,
       handler: undefined,
     };
 
-    const executionContext = this.requestContextService.getExecutionContext();
+    const executionContext = this.contextService.getExecutionContext();
 
     if (executionContext) {
       context.className = executionContext.getClass()?.name ?? undefined;

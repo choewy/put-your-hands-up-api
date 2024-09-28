@@ -3,10 +3,10 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-import { TroublesomeDatabaseLogger, TroublesomeDatabaseLoggerRequestContextService } from './core';
+import { TroublesomeDatabaseLogger, TroublesomeDatabaseLoggerContextService } from './core';
 import * as entities from './entities';
 
-export const createTroublesomeEntityOptions = <T extends TroublesomeDatabaseLoggerRequestContextService>(
+export const createTroublesomeEntityOptions = <T extends TroublesomeDatabaseLoggerContextService>(
   options: Omit<MysqlConnectionOptions, 'type' | 'entities' | 'namingStrategy' | 'synchronize' | 'dropSchema'>,
   requestContextService?: T,
 ): TypeOrmModuleOptions => {
