@@ -1,16 +1,6 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-import { FulfillmentCenterEntity } from './fulfillment-center.entity';
+import { FulfillmentEntity } from './fulfillment.entity';
 import { PartnerGroupEntity } from './partner-group.entity';
 import { PartnerEntity } from './partner.entity';
 
@@ -45,9 +35,9 @@ export class UserEntity {
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('user', 'partner', 'id') })
   partner: PartnerEntity | null;
 
-  @ManyToOne(() => FulfillmentCenterEntity, (e) => e.users, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('user', 'fulfillment_center', 'id') })
-  fulfillmentCenter: FulfillmentCenterEntity | null;
+  @ManyToOne(() => FulfillmentEntity, (e) => e.users, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('user', 'fulfillment', 'id') })
+  fulfillment: FulfillmentEntity | null;
 
   @CreateDateColumn({ type: 'timestamp', comment: '생성일시' })
   readonly createdAt: Date;

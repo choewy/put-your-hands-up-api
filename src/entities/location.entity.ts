@@ -1,6 +1,8 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-import { FulfillmentCenterEntity } from './fulfillment-center.entity';
+import { FulfillmentEntity } from './fulfillment.entity';
+
+import { createForeignKeyConstraintName } from '@/constants';
 
 @Entity({ name: 'location', comment: '로케이션' })
 export class LocationEntity {
@@ -13,8 +15,9 @@ export class LocationEntity {
   @Column({ type: 'varchar', length: 20, comment: '로케이션 이름' })
   name: string;
 
-  @ManyToOne(() => FulfillmentCenterEntity, (e) => e.locations, { nullable: true, onDelete: 'SET NULL' })
-  fulfillmentCenter: FulfillmentCenterEntity;
+  @ManyToOne(() => FulfillmentEntity, (e) => e.locations, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('location', 'fulfillment', 'id') })
+  fulfillment: FulfillmentEntity;
 
   @CreateDateColumn({ type: 'timestamp', comment: '생성일시' })
   readonly createdAt: Date;

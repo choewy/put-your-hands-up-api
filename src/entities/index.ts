@@ -5,12 +5,15 @@ export * from './purchaser.entity';
 export * from './e-commerce-platform.entity';
 export * from './e-commerce-channel.entity';
 
-export * from './fulfillment-center.entity';
-export * from './location.entity';
+export * from './fulfillment.entity';
+export * from './fulfillment-inventory.entity';
+export * from './fulfillment-delivery-company-setting.entity';
 
-export * from './delivery-company.entity';
-export * from './delivery-company-setting.entity';
+export * from './location.entity';
 export * from './consigner.entity';
+export * from './delivery-company.entity';
+export * from './tracking-number.entity';
+export * from './dispatch.entity';
 
 export * from './user.entity';
 
@@ -22,3 +25,5 @@ export * from './order-product.entity';
 export * from './claim.entity';
 export * from './recall.entity';
 export * from './return-approval.entity';
+
+export * from './lock.entity';

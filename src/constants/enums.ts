@@ -35,3 +35,10 @@ export enum RecallStatus {
   Complete = 1,
   Cancel = 2,
 }
+
+export enum LockTarget {}
+
+export enum InventoryStatus {
+  Availabled = 1,
+  Disabled = 2,
+}

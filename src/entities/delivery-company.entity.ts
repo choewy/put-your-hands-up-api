@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinTable, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
-import { FulfillmentCenterEntity } from './fulfillment-center.entity';
+import { FulfillmentDeliveryCompanySettingEntity } from './fulfillment-delivery-company-setting.entity';
 
 @Entity({ name: 'delivery_company', comment: '택배사' })
 export class DeliveryCompanyEntity {
@@ -10,12 +10,9 @@ export class DeliveryCompanyEntity {
   @Column({ type: 'varchar', length: 50, comment: '택배사 이름' })
   name: string;
 
-  @Column({ type: 'boolean', default: false, comment: '기본설정여부' })
-  isDefault: boolean;
-
-  @OneToMany(() => FulfillmentCenterEntity, (e) => e.defaultDeliveryCompany, { cascade: ['remove', 'soft-remove'] })
+  @OneToMany(() => FulfillmentDeliveryCompanySettingEntity, (e) => e.deliveryCompany, { cascade: ['remove', 'soft-remove'] })
   @JoinTable()
-  fulfillmentCenters: FulfillmentCenterEntity[];
+  fulfillmentDeliveryCompanySettings: FulfillmentDeliveryCompanySettingEntity[];
 
   @CreateDateColumn({ type: 'timestamp', comment: '생성일시' })
   readonly createdAt: Date;
