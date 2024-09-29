@@ -7,7 +7,7 @@ import { createForeignKeyConstraintName } from '@/constants';
 @Entity({ name: 'invitation', comment: '초대' })
 export class InvitationEntity {
   @PrimaryGeneratedColumn('uuid', { comment: '초대 PK' })
-  readonly id: number;
+  readonly id: string;
 
   @Column({ type: 'varchar', length: 340, comment: '초대 이메일 계정' })
   email: string;
