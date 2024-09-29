@@ -52,9 +52,15 @@ export class ProductEntity {
   @Column({ type: 'int', unsigned: true, default: 0, comment: '판매가' })
   salePrice: number;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  partnerId: number;
+
   @ManyToOne(() => PartnerEntity, (e) => e.products, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('product', 'partner', 'id') })
   partner: PartnerEntity | null;
+
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  purchaserId: number;
 
   @ManyToOne(() => PurchaserEntity, (e) => e.products, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('product', 'purchaser', 'id') })

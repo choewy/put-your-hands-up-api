@@ -45,9 +45,15 @@ export class BoxEntity {
   @Column({ type: 'smallint', unsigned: true, default: 0, comment: '작업비용' })
   laborCost: number;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  fulfillmentId: number;
+
   @ManyToOne(() => FulfillmentEntity, (e) => e.boxes, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('box', 'fulfillment', 'id') })
   fulfillment: FulfillmentEntity | null;
+
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  partnerId: number;
 
   @ManyToOne(() => PartnerEntity, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('box', 'partner', 'id') })

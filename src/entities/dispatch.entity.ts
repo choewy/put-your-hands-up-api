@@ -1,4 +1,4 @@
-import { CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { DeliveryCompanyEntity } from './delivery-company.entity';
 import { FulfillmentEntity } from './fulfillment.entity';
@@ -10,9 +10,15 @@ export class DispatchEntity {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true, comment: '출고 PK' })
   readonly id: number;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  fulfillmentId: number;
+
   @ManyToOne(() => DeliveryCompanyEntity, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('dispatch', 'fulfillment', 'id') })
   fulfillment: FulfillmentEntity | null;
+
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  deliveryCompanyId: number;
 
   @ManyToOne(() => DeliveryCompanyEntity, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('dispatch', 'delivery_company', 'id') })

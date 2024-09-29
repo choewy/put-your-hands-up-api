@@ -13,9 +13,15 @@ export class FulfillmentDeliveryCompanySettingEntity {
   @Column({ type: 'boolean', default: false, comment: '기본 택배사 여부' })
   isDefault: boolean;
 
+  @Column({ type: 'int', unsigned: true })
+  fulfillmentId: number;
+
   @ManyToOne(() => FulfillmentEntity, (e) => e.fulfillmentDeliveryCompanySettings, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('fulfillment_delivery_company_setting', 'fulfillment', 'id') })
   fulfillment: FulfillmentEntity;
+
+  @Column({ type: 'int', unsigned: true })
+  deliveryCompanyId: number;
 
   @ManyToOne(() => DeliveryCompanyEntity, (e) => e.fulfillmentDeliveryCompanySettings, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('fulfillment_delivery_company_setting', 'delivery_company', 'id') })

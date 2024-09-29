@@ -1,4 +1,4 @@
-import { CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { EcommercePlatformEntity } from './e-commerce-platform.entity';
 import { PartnerEntity } from './partner.entity';
@@ -10,9 +10,15 @@ export class EcommerceChannelEntity {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true, comment: 'e-커머스 채널 PK' })
   readonly id: number;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  ecommercePlatformId: number;
+
   @ManyToOne(() => EcommercePlatformEntity, (e) => e.ecommerceChannels, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('e_commerce_channel', 'e_commerce_platform', 'id') })
   ecommercePlatform: EcommercePlatformEntity;
+
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  partnerId: number;
 
   @ManyToOne(() => PartnerEntity, (e) => e.ecommerceChannels, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('e_commerce_channel', 'partner', 'id') })

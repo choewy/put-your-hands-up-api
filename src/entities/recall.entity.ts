@@ -40,9 +40,15 @@ export class RecallEntity {
   @Column({ type: 'varchar', length: 100, default: null, comment: '회수 송장번호' })
   trackingNumber: string | null;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  claimId: number;
+
   @ManyToOne(() => ClaimEntity, (e) => e.recalls, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('recall', 'order_claim', 'id') })
   claim: ClaimEntity;
+
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  deliveryCompanyId: number;
 
   @ManyToOne(() => DeliveryCompanyEntity, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('recall', 'delivery_company', 'id') })

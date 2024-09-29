@@ -15,6 +15,9 @@ export class LocationEntity {
   @Column({ type: 'varchar', length: 20, comment: '로케이션 이름' })
   name: string;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  fulfillmentId: number;
+
   @ManyToOne(() => FulfillmentEntity, (e) => e.locations, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('location', 'fulfillment', 'id') })
   fulfillment: FulfillmentEntity;

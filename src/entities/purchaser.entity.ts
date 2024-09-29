@@ -57,6 +57,9 @@ export class PurchaserEntity {
   @Column({ type: 'varchar', length: 255, default: null, comment: '비고' })
   description: string | null;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  partnerId: number;
+
   @ManyToOne(() => PartnerEntity, (e) => e.purchasers, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('purchaser', 'partner', 'id') })
   partner: PartnerEntity;

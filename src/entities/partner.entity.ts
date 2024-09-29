@@ -27,6 +27,9 @@ export class PartnerEntity {
   @Column({ type: 'varchar', length: 50, comment: '고객사 이름' })
   name: string;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  partnerGroupId: number;
+
   @ManyToOne(() => PartnerGroupEntity, (e) => e.partners, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('partner', 'partner_group', 'id') })
   partnerGroup: PartnerGroupEntity;

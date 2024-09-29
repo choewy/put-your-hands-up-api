@@ -31,9 +31,15 @@ export class ClaimEntity {
   @Column({ type: 'varchar', length: 1024, comment: '클레임 상세 사유' })
   reasonDetail: string;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  orderId: number;
+
   @ManyToOne(() => OrderEntity, (e) => e.claims, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('order_claim', 'order', 'id') })
   order: OrderEntity;
+
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  orderProductId: number;
 
   @ManyToOne(() => OrderProductEntity, (e) => e.claims, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('order_claim', 'order_product', 'id') })

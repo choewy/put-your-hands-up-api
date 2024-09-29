@@ -18,6 +18,9 @@ export class InvitationEntity {
   @Column({ type: 'boolean', default: false, comment: '사용여부' })
   isCompleted: boolean;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  userId: number;
+
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('invitation', 'user', 'id') })
   user: UserEntity;

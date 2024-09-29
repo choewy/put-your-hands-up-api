@@ -17,13 +17,22 @@ export class FulfillmentInventoryEntity {
   @Column({ type: 'tinyint', unsigned: true, comment: '재고상태' })
   status: InventoryStatus;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  productId: number;
+
   @ManyToOne(() => ProductEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('fulfillment_inventory', 'product', 'id') })
   product: ProductEntity;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  fulfillmentId: number;
+
   @ManyToOne(() => FulfillmentEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('fulfillment_inventory', 'fulfillment', 'id') })
   fulfillment: FulfillmentEntity;
+
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  locationId: number;
 
   @ManyToOne(() => LocationEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('fulfillment_inventory', 'location', 'id') })

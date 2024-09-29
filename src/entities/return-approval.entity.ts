@@ -27,6 +27,9 @@ export class ReturnApprovalEntity {
   @Column({ type: 'boolean', default: false, comment: '반품승인처리완료여부' })
   isCompleted: boolean;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  recallId: number;
+
   @OneToOne(() => RecallEntity, (e) => e.returnApproval, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('return_approval', 'recall', 'id') })
   recall: RecallEntity;

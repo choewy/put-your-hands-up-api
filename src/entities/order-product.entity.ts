@@ -23,9 +23,15 @@ export class OrderProductEntity {
   @Column({ type: 'int', unsigned: true, comment: '상품단가' })
   price: number;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  orderId: number;
+
   @ManyToOne(() => OrderEntity, (e) => e.orderProducts, { onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('order_product', 'order', 'id') })
   order: OrderEntity;
+
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  productId: number;
 
   @ManyToOne(() => ProductEntity, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('order_product', 'product', 'id') })

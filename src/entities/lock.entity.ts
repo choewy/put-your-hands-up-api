@@ -1,4 +1,4 @@
-import { CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { FulfillmentEntity } from './fulfillment.entity';
 import { PartnerEntity } from './partner.entity';
@@ -11,13 +11,22 @@ export class LockEntity {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  userId: number;
+
   @ManyToOne(() => UserEntity, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('lock', 'user', 'id') })
   user: UserEntity | null;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  partnerId: number;
+
   @ManyToOne(() => PartnerEntity, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('lock', 'partner', 'id') })
   partner: PartnerEntity | null;
+
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  fulfillmentId: number;
 
   @ManyToOne(() => FulfillmentEntity, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('lock', 'fulfillmenet', 'id') })
