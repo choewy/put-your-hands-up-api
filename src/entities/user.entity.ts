@@ -27,13 +27,22 @@ export class UserEntity {
   @Column({ type: 'boolean', default: true, comment: '사용자 계정 활성 여부' })
   isActivated: boolean;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  partnerGroupId: number;
+
   @ManyToOne(() => PartnerGroupEntity, (e) => e.users, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('user', 'partner_group', 'id') })
   partnerGroup: PartnerGroupEntity | null;
 
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  partnerId: number;
+
   @ManyToOne(() => PartnerEntity, (e) => e.users, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('user', 'partner', 'id') })
   partner: PartnerEntity | null;
+
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  fulfillmentId: number;
 
   @ManyToOne(() => FulfillmentEntity, (e) => e.users, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('user', 'fulfillment', 'id') })

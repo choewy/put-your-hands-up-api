@@ -2,7 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
+import { UserEntity } from './entities';
 import { createTroublesomeEntityOptions } from './options';
 
 @Module({
@@ -28,6 +30,8 @@ class BootstrapModule {}
 
 async function bootstrap() {
   const app = await NestFactory.create(BootstrapModule, { bufferLogs: true });
+  await app.get(DataSource).getRepository(UserEntity).findOneBy({ fulfillmentId: 1 });
+  await app.get(DataSource).getRepository(UserEntity).findOneBy({ partnerId: 1 });
   await app.listen(3001);
 }
 
