@@ -17,7 +17,7 @@ export * from './tracking-number.entity';
 export * from './dispatch.entity';
 
 export * from './user.entity';
-
+export * from './invitation.entity';
 export * from './product.entity';
 export * from './product-detail.entity';
 
