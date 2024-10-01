@@ -10,7 +10,7 @@ export class EcommercePlatformEntity {
   @Column({ type: 'varchar', length: 50, comment: 'e-커머스 플랫폼 이름' })
   name: string;
 
-  @OneToMany(() => EcommerceChannelEntity, (e) => e.ecommercePlatform, { cascade: ['remove', 'soft-remove'] })
+  @OneToMany(() => EcommerceChannelEntity, (e) => e.ecommercePlatform, { cascade: ['remove'] })
   @JoinTable()
   ecommerceChannels: EcommerceChannelEntity[];
 

@@ -3,8 +3,9 @@ import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, JoinColumn, 
 import { FulfillmentEntity } from './fulfillment.entity';
 import { PartnerGroupEntity } from './partner-group.entity';
 import { PartnerEntity } from './partner.entity';
+import { RoleEntity } from './role.entity';
 
-import { createForeignKeyConstraintName, createIndexConstraintName, UserPrivilige } from '@/constants';
+import { createForeignKeyConstraintName, createIndexConstraintName } from '@/constants';
 
 @Index(createIndexConstraintName('user', 'email'), ['email'], { unique: true })
 @Entity({ name: 'user', comment: '사용자' })
@@ -20,9 +21,6 @@ export class UserEntity {
 
   @Column({ type: 'varchar', length: 50, comment: '사용자 이름' })
   name: string;
-
-  @Column({ type: 'tinyint', unsigned: true, default: UserPrivilige.User, comment: '사용자 권한' })
-  privilige: UserPrivilige;
 
   @Column({ type: 'boolean', default: true, comment: '사용자 계정 활성 여부' })
   isActivated: boolean;
@@ -47,6 +45,13 @@ export class UserEntity {
   @ManyToOne(() => FulfillmentEntity, (e) => e.users, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('user', 'fulfillment', 'id') })
   fulfillment: FulfillmentEntity | null;
+
+  @Column({ type: 'int', unsigned: true, nullable: true })
+  roleId: number;
+
+  @ManyToOne(() => RoleEntity, (e) => e.users, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('user', 'role', 'id') })
+  role: RoleEntity | null;
 
   @CreateDateColumn({ type: 'timestamp', comment: '생성일시' })
   readonly createdAt: Date;

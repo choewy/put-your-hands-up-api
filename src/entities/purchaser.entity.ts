@@ -64,7 +64,7 @@ export class PurchaserEntity {
   @JoinColumn({ foreignKeyConstraintName: createForeignKeyConstraintName('purchaser', 'partner', 'id') })
   partner: PartnerEntity;
 
-  @OneToMany(() => ProductEntity, (e) => e.purchaser, { cascade: ['remove', 'soft-remove'] })
+  @OneToMany(() => ProductEntity, (e) => e.purchaser, { cascade: ['remove'] })
   @JoinTable()
   products: ProductEntity[];
 

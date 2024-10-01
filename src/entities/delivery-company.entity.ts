@@ -10,7 +10,7 @@ export class DeliveryCompanyEntity {
   @Column({ type: 'varchar', length: 50, comment: '택배사 이름' })
   name: string;
 
-  @OneToMany(() => FulfillmentDeliveryCompanySettingEntity, (e) => e.deliveryCompany, { cascade: ['remove', 'soft-remove'] })
+  @OneToMany(() => FulfillmentDeliveryCompanySettingEntity, (e) => e.deliveryCompany, { cascade: ['remove'] })
   @JoinTable()
   fulfillmentDeliveryCompanySettings: FulfillmentDeliveryCompanySettingEntity[];
 

@@ -21,7 +21,7 @@ import { createTroublesomeEntityOptions } from './options';
           database: configService.getOrThrow('DB_DATABASE'),
         });
 
-        return { ...options, synchronize: true, dropSchema: true, logging: true };
+        return { ...options, synchronize: true, dropSchema: false, logging: true };
       },
     }),
   ],
