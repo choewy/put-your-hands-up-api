@@ -5,13 +5,16 @@ import { PartnerGroupEntity } from './partner-group.entity';
 import { PartnerEntity } from './partner.entity';
 import { RoleEntity } from './role.entity';
 
-import { createForeignKeyConstraintName, createIndexConstraintName } from '@/constants';
+import { createForeignKeyConstraintName, createIndexConstraintName, UserType } from '@/constants';
 
 @Index(createIndexConstraintName('user', 'email'), ['email'], { unique: true })
 @Entity({ name: 'user', comment: '사용자' })
 export class UserEntity {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true, comment: '사용자 PK' })
   readonly id: number;
+
+  @Column({ type: 'tinyint', unsigned: true, default: UserType.User, comment: '사용자 구분' })
+  type: UserType;
 
   @Column({ type: 'varchar', length: 340, comment: '사용자 이메일 계정' })
   email: string;

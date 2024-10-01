@@ -1,3 +1,8 @@
+export enum UserType {
+  SystemAdmin = 1,
+  User = 0,
+}
+
 export enum ProductType {
   Single = '단품',
   Set = '세트',
