@@ -8,7 +8,7 @@ import { NaverLastChangedType } from '../constants';
 
 import { IsDateTime, toDateTime } from '@/common';
 
-export class NaverGetNaversOrdersDTO extends NaverOAuthCredentialsDTO {
+export class NaverGetOrdersDTO extends NaverOAuthCredentialsDTO {
   @ApiProperty({ type: Date, format: 'date' })
   @IsDateTime()
   @IsNotEmpty()

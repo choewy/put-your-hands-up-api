@@ -18,7 +18,7 @@ import {
   NaverProductOrdersResponse,
   NaverResponseError,
 } from './constants';
-import { NaverGetNaversOrdersDTO, NaverOAuthDTO } from './dtos';
+import { NaverConfirmDTO, NaverGetOrdersDTO, NaverGetOrdersResponseDTO, NaverLastChangedStatusDTO, NaverOAuthDTO } from './dtos';
 
 import { isProduction } from '@/common';
 
@@ -40,28 +40,33 @@ export class NaverService implements OnModuleInit {
     }
   }
 
-  async getNaverOrders(body: NaverGetNaversOrdersDTO) {
-    const oauth = await this.issueOAuth(body);
+  async getOrders(body: NaverGetOrdersDTO) {
+    const oauth = await this.createOAuth(body);
 
-    let lastChangedProductOrderIds: string[] = [];
+    let lastChangedStatues: NaverLastChangedStatusDTO[] = [];
 
     for (const lastChangedType of body.lastChangedTypes) {
-      lastChangedProductOrderIds = lastChangedProductOrderIds.concat(await this.getLastChangedStatuses(oauth, body.startDate, body.endDate, lastChangedType));
+      lastChangedStatues = lastChangedStatues.concat(await this.getLastChangedStatuses(oauth, body.startDate, body.endDate, lastChangedType));
     }
 
-    const confirmedProductOrderIds = await this.confirmProductOrders(oauth, lastChangedProductOrderIds);
+    const lastChangedStatusOrderProductIds = lastChangedStatues.map(({ productOrderId }) => productOrderId);
 
-    // TODO
-    console.log(confirmedProductOrderIds);
+    const confirmResults = await this.confirmProductOrders(oauth, lastChangedStatusOrderProductIds);
+    const confirmSuccessProductOrderIds = confirmResults.filter(({ status }) => status).map(({ productOrderId }) => productOrderId);
 
-    return;
+    const productOrders = await this.getProductOrders(oauth, confirmSuccessProductOrderIds);
+
+    console.log(productOrders);
+
+    // TODO productOrders
+    return new NaverGetOrdersResponseDTO(lastChangedStatues, confirmResults);
   }
 
   async getOAuth(body: NaverOAuthCredentials) {
-    return new NaverOAuthDTO(await this.issueOAuth(body));
+    return new NaverOAuthDTO(await this.createOAuth(body));
   }
 
-  private async issueOAuth<T extends NaverOAuthCredentials>(credentials: T) {
+  private async createOAuth<T extends NaverOAuthCredentials>(credentials: T) {
     const timestamp = Date.now();
     const saltKey = `$2a$04$${credentials.clientSecret}$`;
     const signature = `${credentials.clientId}_${timestamp}`;
@@ -95,11 +100,11 @@ export class NaverService implements OnModuleInit {
       return;
     }
 
-    oauth.set(await this.issueOAuth(oauth.credentials));
+    oauth.set(await this.createOAuth(oauth.credentials));
   }
 
   private async getLastChangedStatuses(oauth: NaverOAuth, startDate: DateTime, endDate: DateTime, lastChangedType: NaverLastChangedType) {
-    const lastChangedProductOrderIds: string[] = [];
+    const lastChangedStatuses: NaverLastChangedStatusDTO[] = [];
     const params: NaverLastChangedStatusRequestParam = {
       lastChangedType,
       lastChangedFrom: startDate.startOf('day').toISO({ includeOffset: true }),
@@ -122,7 +127,9 @@ export class NaverService implements OnModuleInit {
         const data = res.data.data;
         const more = data.more ?? null;
 
-        lastChangedProductOrderIds.push(...data.lastChangeStatuses.map(({ productOrderId }) => productOrderId));
+        for (const lastChangedStatus of data.lastChangeStatuses) {
+          lastChangedStatuses.push(new NaverLastChangedStatusDTO(lastChangedStatus));
+        }
 
         if (more === null) {
           break;
@@ -131,7 +138,6 @@ export class NaverService implements OnModuleInit {
         params.lastChangedFrom = more.moreFrom;
         params.moreSequence = more.moreSequence;
       } catch (e) {
-        // TODO
         const error = new NaverResponseError(e);
 
         console.log({ params, error });
@@ -140,15 +146,15 @@ export class NaverService implements OnModuleInit {
       }
     }
 
-    return lastChangedProductOrderIds;
+    return lastChangedStatuses;
   }
 
   private async confirmProductOrders(oauth: NaverOAuth, targetProductOrderIds: string[]) {
     if (this.isEnableConfirm() === false) {
-      return targetProductOrderIds;
+      return targetProductOrderIds.map((productOrderId) => new NaverConfirmDTO({ productOrderId }, true));
     }
 
-    const confirmedProductOrderIds = [];
+    const confirmResults: NaverConfirmDTO[] = [];
 
     let sliceIndex = 0;
 
@@ -169,23 +175,31 @@ export class NaverService implements OnModuleInit {
 
         const { data } = await lastValueFrom(this.httpService.post<NaverConfirmProductOrdersResponse>(NaverURLPath.ProductOrdersConfirm, body, { headers }));
 
-        for (const successProductOrderInfo of data.data.successProductOrderInfos) {
-          confirmedProductOrderIds.push(successProductOrderInfo.productOrderId);
+        for (const orderInfo of data.data.successProductOrderInfos) {
+          confirmResults.push(new NaverConfirmDTO(orderInfo, true));
+        }
+
+        for (const orderInfo of data.data.failProductOrderInfos) {
+          confirmResults.push(new NaverConfirmDTO(orderInfo, false));
         }
       } catch (e) {
-        // TODO
         const error = new NaverResponseError(e);
 
-        console.log({ productOrderIds, error });
+        for (const productOrderId of productOrderIds) {
+          confirmResults.push(new NaverConfirmDTO({ productOrderId, message: error.message }, false));
+        }
 
         continue;
       }
     }
 
-    return confirmedProductOrderIds;
+    return confirmResults;
   }
 
-  private async getProductOrdersQuery(oauth: NaverOAuth, targetProductOrderIds: string[]) {
+  private async getProductOrders(oauth: NaverOAuth, targetProductOrderIds: string[]) {
+    // TODO dtos
+    const productOrders = [];
+
     let sliceIndex = 0;
 
     while (true) {
@@ -218,5 +232,7 @@ export class NaverService implements OnModuleInit {
         continue;
       }
     }
+
+    return productOrders;
   }
 }

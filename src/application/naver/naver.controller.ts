@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { NaverGetNaversOrdersDTO, NaverOAuthCredentialsDTO, NaverOAuthDTO } from './dtos';
+import { NaverGetOrdersDTO, NaverGetOrdersResponseDTO, NaverOAuthCredentialsDTO, NaverOAuthDTO } from './dtos';
 import { NaverService } from './naver.service';
 
 @ApiTags('네이버 API')
@@ -20,8 +20,8 @@ export class NaverController {
   @Post('orders')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '주문 조회' })
-  @ApiOkResponse({})
-  async getNaverOrders(@Body() body: NaverGetNaversOrdersDTO) {
-    return this.naverService.getNaverOrders(body);
+  @ApiOkResponse({ type: NaverGetOrdersResponseDTO })
+  async getOrders(@Body() body: NaverGetOrdersDTO) {
+    return this.naverService.getOrders(body);
   }
 }
