@@ -1,36 +1,35 @@
 import { Injectable } from '@nestjs/common';
-import { DiskHealthIndicator, HealthCheckService, HttpHealthIndicator, MemoryHealthIndicator } from '@nestjs/terminus';
+import { DiskHealthIndicator, HealthCheckService, MemoryHealthIndicator, HealthCheckError } from '@nestjs/terminus';
+
+import { HealthCheckTarget } from './constant/enums';
+import { HealthCheckResultDTO } from './dto/health-check-result.dto';
 
 @Injectable()
 export class HealthService {
   constructor(
     private healthCheckService: HealthCheckService,
-    private httpHealthIndicator: HttpHealthIndicator,
     private diskHealthIndicator: DiskHealthIndicator,
     private memoryIndicator: MemoryHealthIndicator,
   ) {}
 
   async healthCheck() {
-    const healthCheckResult = await this.healthCheckService
-      .check([
-        () => this.memoryIndicator.checkHeap('memory_heap', 150 * 1024 * 1024),
-        () => this.memoryIndicator.checkRSS('memory_rss', 150 * 1024 * 1024),
-        () => this.diskHealthIndicator.checkStorage('storage', { path: '/', threshold: 250 * 1024 * 1024 * 1024 }),
-        () => this.httpHealthIndicator.pingCheck('troublesome_client_api_server', 'http://localhost:4000'),
-      ])
-      .then((res) => res.details)
-      .catch((e) => {
-        const result = e.response;
-        const errors = result.error;
-        const details = result.details;
+    const healthCheckResult = await this.healthCheckService.check([
+      () => this.memoryIndicator.checkHeap(HealthCheckTarget.MemoryHeap, 150 * 1024 * 1024).catch(this.healthCheckErrorCatch(HealthCheckTarget.MemoryHeap)),
+      () => this.memoryIndicator.checkRSS(HealthCheckTarget.MemoryRSS, 150 * 1024 * 1024).catch(this.healthCheckErrorCatch(HealthCheckTarget.MemoryRSS)),
+      () =>
+        this.diskHealthIndicator
+          .checkStorage(HealthCheckTarget.Disk, { path: '/', threshold: 250 * 1024 * 1024 * 1024 })
+          .catch(this.healthCheckErrorCatch(HealthCheckTarget.Disk)),
+    ]);
 
-        for (const key of Object.keys(errors)) {
-          details[key].message = e.message;
-        }
+    return new HealthCheckResultDTO(healthCheckResult);
+  }
 
-        return details;
-      });
+  private healthCheckErrorCatch(target: string) {
+    return (e: unknown) => {
+      const error = e as HealthCheckError;
 
-    return healthCheckResult;
+      return { [target]: error.cause[target] };
+    };
   }
 }
