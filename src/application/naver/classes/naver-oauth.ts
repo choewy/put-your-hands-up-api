@@ -1,7 +1,6 @@
 import { DateTime } from 'luxon';
 
-import { NaverOAuthCredentials } from './naver-oauth-credentials';
-import { NaverOAuthTokenResponse } from '../constants';
+import { NaverOAuthCredentials, NaverOAuthTokenResponse } from '../constant/interfaces';
 
 export class NaverOAuth {
   credentials: NaverOAuthCredentials;

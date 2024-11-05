@@ -1,7 +1,10 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { NaverGetOrdersDTO, NaverGetOrdersResponseDTO, NaverOAuthCredentialsDTO, NaverOAuthDTO } from './dtos';
+import { NaverGetOrdersResponseDTO } from './dto/naver-get-orders-response.dto';
+import { NaverGetOrdersDTO } from './dto/naver-get-orders.dto';
+import { NaverOAuthCredentialsDTO } from './dto/naver-oauth-credentials.dto';
+import { NaverOAuthDTO } from './dto/naver-oauth.dto';
 import { NaverService } from './naver.service';
 
 @ApiTags('네이버 API')

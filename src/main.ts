@@ -1,29 +1,29 @@
+import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
 
 import { AppModule } from './app.module';
-import { ExceptionFilter, SerializeInterceptor, Swagger, SwaggerDocumentOptions, ValidationPipe } from './bootstrap';
-import { AppConfigFactory, isLocal } from './common';
-import { ContextInterceptor } from './core';
+import { ContextInterceptor } from './common/context/context.interceptor';
+import { ExceptionFilter } from './common/providers/exception.filter';
+import { SerializeInterceptor } from './common/providers/serialize.interceptor';
+import { ValidationPipe } from './common/providers/validation.pipe';
+import { Swagger } from './common/swagger/swagger';
+import { ConfigKey } from './constant/enums';
+import { isLocal } from './constant/helpers';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
-  const appConfigFactory = app.get(AppConfigFactory);
-  const packageProfile = appConfigFactory.packageProfile;
+  const configService = app.get(ConfigService);
+
+  const origin = new RegExp(configService.getOrThrow(ConfigKey.CorsOrigin));
+  const port = configService.getOrThrow(ConfigKey.Port);
+  const host = configService.getOrThrow(ConfigKey.Host);
 
   if (isLocal()) {
-    const swaggerOptions: SwaggerDocumentOptions = {
-      title: packageProfile.name,
-      version: packageProfile.version,
-    };
-
-    Swagger.setup(app, swaggerOptions);
+    new Swagger(app).setDocument().setup();
   }
 
-  const corsOptions = appConfigFactory.corsOptions;
-  const { port, host } = appConfigFactory.listenOptions;
-
   app.enableShutdownHooks();
-  app.enableCors(corsOptions);
+  app.enableCors({ origin });
   app.useGlobalInterceptors(new SerializeInterceptor(app.get(Reflector)), app.get(ContextInterceptor));
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new ExceptionFilter());

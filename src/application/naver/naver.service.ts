@@ -4,23 +4,25 @@ import * as bcrypt from 'bcrypt';
 import { DateTime } from 'luxon';
 import { lastValueFrom } from 'rxjs';
 
-import { NaverOAuth, NaverOAuthCredentials } from './classes';
+import { NaverOAuth } from './classes/naver-oauth';
+import { NaverBaseURL, NaverLastChangedType, NaverURLPath } from './constant/enums';
+import { NaverOAuthTokenError, NaverResponseError } from './constant/exceptions';
 import {
-  NaverBaseURL,
+  NaverConfirmProductOrdersResponse,
   NaverLastChangedStatusRequestParam,
   NaverLastChangedStatusResponse,
-  NaverLastChangedType,
+  NaverOAuthCredentials,
   NaverOAuthTokenRequestBody,
   NaverOAuthTokenResponse,
-  NaverURLPath,
-  NaverOAuthTokenError,
-  NaverConfirmProductOrdersResponse,
   NaverProductOrdersResponse,
-  NaverResponseError,
-} from './constants';
-import { NaverConfirmDTO, NaverGetOrdersDTO, NaverGetOrdersResponseDTO, NaverLastChangedStatusDTO, NaverOAuthDTO } from './dtos';
+} from './constant/interfaces';
+import { NaverConfirmDTO } from './dto/naver-confirm.dto';
+import { NaverGetOrdersResponseDTO } from './dto/naver-get-orders-response.dto';
+import { NaverGetOrdersDTO } from './dto/naver-get-orders.dto';
+import { NaverLastChangedStatusDTO } from './dto/naver-last-changed-status.dto';
+import { NaverOAuthDTO } from './dto/naver-oauth.dto';
 
-import { isProduction } from '@/common';
+import { isProduction } from '@/constant/helpers';
 
 @Injectable()
 export class NaverService implements OnModuleInit {

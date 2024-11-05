@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-import { AppConfigFactory } from '@/common';
+import { ConfigKey } from './constant/enums';
+import { getEnv } from './constant/helpers';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly appConfigFactory: AppConfigFactory) {}
+  constructor(private readonly configService: ConfigService) {}
 
-  public getPackageProfile() {
-    return this.appConfigFactory.packageProfile;
+  public getAppProfile() {
+    return {
+      name: this.configService.get(ConfigKey.NpmPackageName),
+      version: this.configService.get(ConfigKey.NpmPackageVersion),
+      env: getEnv(),
+    };
   }
 }
