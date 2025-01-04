@@ -17,7 +17,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-@AllArgsConstructor()
+@AllArgsConstructor
 @Entity(name = "temp")
 @Comment(value = "임시")
 public class Temp {
