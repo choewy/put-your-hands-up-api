@@ -1,4 +1,4 @@
-package com.put_your_hands_up.component;
+package com.putyourhandsup.component;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

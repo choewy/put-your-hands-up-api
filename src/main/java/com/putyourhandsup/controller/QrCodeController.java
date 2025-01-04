@@ -1,4 +1,4 @@
-package com.put_your_hands_up.controller;
+package com.putyourhandsup.controller;
 
 import org.apache.commons.lang3.ObjectUtils.Null;
 import org.springframework.http.HttpStatus;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.put_your_hands_up.dto.CreateQrCodeRequestDTO;
-import com.put_your_hands_up.service.QrCodeService;
+import com.putyourhandsup.dto.CreateQrCodeRequestDTO;
+import com.putyourhandsup.service.QrCodeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

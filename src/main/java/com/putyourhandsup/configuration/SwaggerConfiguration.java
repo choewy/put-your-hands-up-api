@@ -1,4 +1,4 @@
-package com.put_your_hands_up.configuration;
+package com.putyourhandsup.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

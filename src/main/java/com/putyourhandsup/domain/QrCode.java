@@ -1,4 +1,4 @@
-package com.put_your_hands_up.domain;
+package com.putyourhandsup.domain;
 
 import java.sql.Timestamp;
 

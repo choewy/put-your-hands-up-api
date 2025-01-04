@@ -1,6 +1,6 @@
-package com.put_your_hands_up.dto;
+package com.putyourhandsup.dto;
 
-import com.put_your_hands_up.validation.IsUrl;
+import com.putyourhandsup.validation.IsUrl;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

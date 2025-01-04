@@ -1,4 +1,4 @@
-package com.put_your_hands_up.service;
+package com.putyourhandsup.service;
 
 import java.io.ByteArrayOutputStream;
 
@@ -9,11 +9,11 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
-import com.put_your_hands_up.component.ApplicationProperties;
-import com.put_your_hands_up.domain.QrCode;
-import com.put_your_hands_up.dto.CreateQrCodeRequestDTO;
-import com.put_your_hands_up.persistence.ServiceException;
-import com.put_your_hands_up.repository.QrCodeRepository;
+import com.putyourhandsup.component.ApplicationProperties;
+import com.putyourhandsup.domain.QrCode;
+import com.putyourhandsup.dto.CreateQrCodeRequestDTO;
+import com.putyourhandsup.persistence.ServiceException;
+import com.putyourhandsup.repository.QrCodeRepository;
 
 import lombok.RequiredArgsConstructor;
 

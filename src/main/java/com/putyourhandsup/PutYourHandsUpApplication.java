@@ -1,4 +1,4 @@
-package com.put_your_hands_up;
+package com.putyourhandsup;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

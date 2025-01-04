@@ -1,4 +1,4 @@
-package com.put_your_hands_up.validation;
+package com.putyourhandsup.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

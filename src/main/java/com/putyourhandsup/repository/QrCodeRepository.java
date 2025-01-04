@@ -1,11 +1,11 @@
-package com.put_your_hands_up.repository;
+package com.putyourhandsup.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 
-import com.put_your_hands_up.domain.QrCode;
+import com.putyourhandsup.domain.QrCode;
 
 import jakarta.persistence.LockModeType;
 

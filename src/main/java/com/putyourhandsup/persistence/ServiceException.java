@@ -1,4 +1,4 @@
-package com.put_your_hands_up.persistence;
+package com.putyourhandsup.persistence;
 
 public class ServiceException extends RuntimeException {
   private String message;
