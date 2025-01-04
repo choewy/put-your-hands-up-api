@@ -1,37 +1,36 @@
-name: troublesome
+name: put_your_hands_up
 
 services:
   mysql:
     image: mysql:8.0
-    container_name: troublesome-mysql
+    container_name: put_your_hands_up-mysql
     environment:
-      MYSQL_USER: troublesome
-      MYSQL_PASSWORD: troublesome
-      MYSQL_ROOT_PASSWORD: troublesome
+      MYSQL_ROOT_PASSWORD: put_your_hands_up
+      MYSQL_DATABASE: put_your_hands_up
       TZ: Asia/Seoul
     volumes:
       - .docker/mysql/initdb.d:/docker-entrypoint-initdb.d
-      - ../troublesome-docker/mysql/data:/var/lib/mysql
-      - ../troublesome-docker/mysql/log:/var/log
+      - ../put_your_hands_up-docker/mysql/data:/var/lib/mysql
+      - ../put_your_hands_up-docker/mysql/log:/var/log
     ports:
       - 33063:3306
     restart: unless-stopped
     networks:
-      - troublesome
+      - put_your_hands_up
 
   redis:
     image: redis/redis-stack-server:7.2.0-v10
-    container_name: troublesome-redis
+    container_name: put_your_hands_up-redis
     volumes:
       - .docker/redis/redis.conf/:/redis-stack.conf
-      - ../troublesome-docker/redis/data/:/data
-      - ../troublesome-docker/redis/log:/var/log/redis
+      - ../put_your_hands_up-docker/redis/data/:/data
+      - ../put_your_hands_up-docker/redis/log:/var/log/redis
     ports:
       - 6383:6379
     restart: unless-stopped
     networks:
-      - troublesome
+      - put_your_hands_up
 
 networks:
-  troublesome:
+  put_your_hands_up:
     driver: bridge
