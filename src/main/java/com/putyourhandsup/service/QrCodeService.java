@@ -53,6 +53,11 @@ public class QrCodeService {
       throws ServiceException {
     Long exampleRestaurantId = 1L;
 
+    // TODO validate
+    // !!currentUser.Restaurant
+    // !!RestaurantTable
+    // currentUser.getRestaurant.getId().equal(restaurantTable.getRestaurant().getId())
+
     QrCode qrCode = qrCodeRepository
         .findByRestaurantIdAndRestaurantTableIdAndDeletedAtIsNull(exampleRestaurantId, body.getTableId())
         .orElse(QrCode.builder()
