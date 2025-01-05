@@ -4,9 +4,12 @@ import java.sql.Timestamp;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,13 +36,6 @@ public class QrCode {
   @Comment(value = "QR Code PK")
   private Long id;
 
-  /**
-   * @deprecated 삭제할 것(restaurant_id, restaurant_table_id로 사용)
-   */
-  @Column(name = "url", columnDefinition = "VARCHAR(1024)", nullable = false)
-  @Comment(value = "URL")
-  private String url;
-
   @Column(name = "scan_count", columnDefinition = "BIGINT UNSIGNED", nullable = false)
   @ColumnDefault(value = "0")
   @Comment(value = "스캔 횟수")
@@ -62,19 +58,26 @@ public class QrCode {
 
   @ManyToOne
   @JoinColumn(name = "restaurant_id", nullable = true)
+  @OnDelete(action = OnDeleteAction.SET_NULL)
   private Restaurant restaurant;
 
   @ManyToOne
   @JoinColumn(name = "restaurant_table_id", nullable = true)
+  @OnDelete(action = OnDeleteAction.SET_NULL)
   private RestaurantTable restaurantTable;
 
   @PrePersist
   public void prePersist() {
+    if (this.scanCount == null) {
+      this.scanCount = 0L;
+    }
+
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
     if (this.createdAt == null) {
       this.createdAt = timestamp;
     }
+
     if (this.updatedAt == null) {
       this.updatedAt = timestamp;
     }

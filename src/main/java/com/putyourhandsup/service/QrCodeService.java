@@ -11,9 +11,12 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.putyourhandsup.component.ApplicationProperties;
 import com.putyourhandsup.domain.QrCode;
+import com.putyourhandsup.domain.Restaurant;
+import com.putyourhandsup.domain.RestaurantTable;
 import com.putyourhandsup.dto.CreateQrCodeRequestDTO;
 import com.putyourhandsup.persistence.ServiceException;
 import com.putyourhandsup.repository.QrCodeRepository;
+import com.putyourhandsup.repository.RestaurantTableRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class QrCodeService {
   private final ApplicationProperties applicationProperties;
+  private final RestaurantTableRepository restaurantTableRepository;
   private final QrCodeRepository qrCodeRepository;
 
   public String scanQrCode(Long id) throws ServiceException {
@@ -34,20 +38,26 @@ public class QrCodeService {
     QrCode qrCode = qrCodeRepository.findByIdAndDeletedAtIsNull(id)
         .orElseThrow(() -> new ServiceException("NotFound"));
 
-    return qrCode.getUrl();
+    String clientUrl = applicationProperties.getClientUrl();
+    return clientUrl += ("/restaurant/"
+        + qrCode.getRestaurant().getId().toString() + "/orders?tableId="
+        + qrCode.getRestaurantTable().getId().toString());
   }
 
   private String createQrCodeContents(QrCode qrCode) {
-    String applicationDomain = applicationProperties.getDomain();
-    return applicationDomain += ("/qr_codes?id=" + qrCode.getId().toString());
+    String serverUrl = applicationProperties.getServerUrl();
+    return serverUrl += ("/qr_codes?id=" + qrCode.getId().toString());
   }
 
   public byte[] createQrCode(CreateQrCodeRequestDTO body)
       throws ServiceException {
-    QrCode qrCode = qrCodeRepository.findByUrlAndDeletedAtIsNull(body.getUrl())
+    Long exampleRestaurantId = 1L;
+
+    QrCode qrCode = qrCodeRepository
+        .findByRestaurantIdAndRestaurantTableIdAndDeletedAtIsNull(exampleRestaurantId, body.getTableId())
         .orElse(QrCode.builder()
-            .url(body.getUrl())
-            .scanCount(0L)
+            .restaurant(Restaurant.builder().id(exampleRestaurantId).build())
+            .restaurantTable(RestaurantTable.builder().id(body.getTableId()).build())
             .build());
 
     if (qrCode.getId() == null) {

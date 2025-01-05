@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -36,9 +38,9 @@ public class RestaurantTable {
   @Comment(value = "식당 테이블 PK")
   private Long id;
 
-  @Column(name = "number", columnDefinition = "SMALLINT UNSIGNED")
-  @Comment(value = "식당 테이블 번호")
-  private int number;
+  @Column(name = "alias", columnDefinition = "VARCHAR(20)")
+  @Comment(value = "식당 테이블 별칭")
+  private String alias;
 
   @Column(name = "created_at", columnDefinition = "TIMESTAMP", nullable = false)
   @ColumnDefault(value = "CURRENT_TIMESTAMP")
@@ -57,6 +59,7 @@ public class RestaurantTable {
 
   @ManyToOne
   @JoinColumn(name = "restaurant_id", nullable = true)
+  @OnDelete(action = OnDeleteAction.SET_NULL)
   private Restaurant restaurant;
 
   @OneToMany(mappedBy = "restaurantTable", cascade = CascadeType.ALL)

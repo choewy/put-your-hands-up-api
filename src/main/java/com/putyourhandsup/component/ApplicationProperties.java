@@ -12,5 +12,6 @@ import lombok.Setter;
 @ConfigurationProperties(prefix = "spring.application")
 public class ApplicationProperties {
   private String name;
-  private String domain;
+  private String serverUrl;
+  private String clientUrl;
 }

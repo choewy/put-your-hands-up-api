@@ -16,6 +16,7 @@ public interface QrCodeRepository extends JpaRepository<QrCode, Long> {
 
   public Optional<QrCode> findByIdAndDeletedAtIsNull(Long id);
 
-  public Optional<QrCode> findByUrlAndDeletedAtIsNull(String url);
-
+  public Optional<QrCode> findByRestaurantIdAndRestaurantTableIdAndDeletedAtIsNull(
+      Long restaurantId,
+      Long restaurantTableId);
 }

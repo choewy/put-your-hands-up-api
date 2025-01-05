@@ -1,8 +1,6 @@
 package com.putyourhandsup.dto;
 
-import com.putyourhandsup.validation.IsUrl;
-
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +13,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CreateQrCodeRequestDTO {
-  @NotBlank
-  @IsUrl
-  private String url;
+  @NotNull
+  private Long tableId;
 }
