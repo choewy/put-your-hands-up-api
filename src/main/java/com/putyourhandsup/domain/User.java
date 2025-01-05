@@ -24,26 +24,26 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-@Comment(value = "QR Code")
-@Entity(name = "qr_code")
-public class QrCode {
+@Comment(value = "사용자")
+@Entity(name = "user")
+public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", columnDefinition = "BIGINT UNSIGNED")
-  @Comment(value = "QR Code PK")
+  @Comment(value = "사용자 PK")
   private Long id;
 
-  /**
-   * @deprecated 삭제할 것(restaurant_id, restaurant_table_id로 사용)
-   */
-  @Column(name = "url", columnDefinition = "VARCHAR(1024)", nullable = false)
-  @Comment(value = "URL")
-  private String url;
+  @Column(name = "email", columnDefinition = "VARCHAR(340)", nullable = false, unique = true)
+  @Comment(value = "이메일")
+  private String email;
 
-  @Column(name = "scan_count", columnDefinition = "BIGINT UNSIGNED", nullable = false)
-  @ColumnDefault(value = "0")
-  @Comment(value = "스캔 횟수")
-  private Long scanCount;
+  @Column(name = "password", columnDefinition = "VARCHAR(255)", nullable = false)
+  @Comment(value = "비밀번호")
+  private String password;
+
+  @Column(name = "name", columnDefinition = "VARCHAR(50)", nullable = false)
+  @Comment(value = "이름")
+  private String name;
 
   @Column(name = "created_at", columnDefinition = "TIMESTAMP", nullable = false)
   @ColumnDefault(value = "CURRENT_TIMESTAMP")
@@ -63,10 +63,6 @@ public class QrCode {
   @ManyToOne
   @JoinColumn(name = "restaurant_id", nullable = true)
   private Restaurant restaurant;
-
-  @ManyToOne
-  @JoinColumn(name = "restaurant_table_id", nullable = true)
-  private RestaurantTable restaurantTable;
 
   @PrePersist
   public void prePersist() {

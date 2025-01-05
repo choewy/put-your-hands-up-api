@@ -1,10 +1,12 @@
 package com.putyourhandsup.domain;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,26 +27,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-@Comment(value = "QR Code")
-@Entity(name = "qr_code")
-public class QrCode {
+@Comment(value = "식당 테이블")
+@Entity(name = "restaurant_table")
+public class RestaurantTable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", columnDefinition = "BIGINT UNSIGNED")
-  @Comment(value = "QR Code PK")
+  @Comment(value = "식당 테이블 PK")
   private Long id;
 
-  /**
-   * @deprecated 삭제할 것(restaurant_id, restaurant_table_id로 사용)
-   */
-  @Column(name = "url", columnDefinition = "VARCHAR(1024)", nullable = false)
-  @Comment(value = "URL")
-  private String url;
-
-  @Column(name = "scan_count", columnDefinition = "BIGINT UNSIGNED", nullable = false)
-  @ColumnDefault(value = "0")
-  @Comment(value = "스캔 횟수")
-  private Long scanCount;
+  @Column(name = "number", columnDefinition = "SMALLINT UNSIGNED")
+  @Comment(value = "식당 테이블 번호")
+  private int number;
 
   @Column(name = "created_at", columnDefinition = "TIMESTAMP", nullable = false)
   @ColumnDefault(value = "CURRENT_TIMESTAMP")
@@ -55,7 +50,7 @@ public class QrCode {
   @Comment(value = "수정일시")
   private Timestamp updatedAt;
 
-  @Column(name = "deleted_at", columnDefinition = "TIMESTAMP", nullable = true)
+  @Column(name = "deleted_at", columnDefinition = "TIMESTAMP")
   @ColumnDefault(value = "NULL")
   @Comment(value = "삭제일시")
   private Timestamp deletedAt;
@@ -64,9 +59,8 @@ public class QrCode {
   @JoinColumn(name = "restaurant_id", nullable = true)
   private Restaurant restaurant;
 
-  @ManyToOne
-  @JoinColumn(name = "restaurant_table_id", nullable = true)
-  private RestaurantTable restaurantTable;
+  @OneToMany(mappedBy = "restaurantTable", cascade = CascadeType.ALL)
+  private List<QrCode> qrCodes;
 
   @PrePersist
   public void prePersist() {
