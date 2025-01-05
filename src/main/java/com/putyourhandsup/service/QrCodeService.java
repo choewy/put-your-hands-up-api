@@ -25,11 +25,14 @@ public class QrCodeService {
   private final QrCodeRepository qrCodeRepository;
 
   public String scanQrCode(Long id) throws ServiceException {
-    QrCode qrCode = qrCodeRepository.findOneById(id)
-        .orElseThrow(() -> new ServiceException("NotFound"));
+    int updateResult = qrCodeRepository.incrementScanCountById(id);
 
-    qrCode.setScanCount(qrCode.getScanCount() + 1);
-    qrCodeRepository.save(qrCode);
+    if (updateResult == 0) {
+      throw new ServiceException("NotFound");
+    }
+
+    QrCode qrCode = qrCodeRepository.findByIdAndDeletedAtIsNull(id)
+        .orElseThrow(() -> new ServiceException("NotFound"));
 
     return qrCode.getUrl();
   }
@@ -41,7 +44,7 @@ public class QrCodeService {
 
   public byte[] createQrCode(CreateQrCodeRequestDTO body)
       throws ServiceException {
-    QrCode qrCode = qrCodeRepository.findOneByUrl(body.getUrl())
+    QrCode qrCode = qrCodeRepository.findByUrlAndDeletedAtIsNull(body.getUrl())
         .orElse(QrCode.builder()
             .url(body.getUrl())
             .scanCount(0L)

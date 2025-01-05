@@ -3,15 +3,19 @@ package com.putyourhandsup.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.putyourhandsup.domain.QrCode;
 
-import jakarta.persistence.LockModeType;
-
 public interface QrCodeRepository extends JpaRepository<QrCode, Long> {
-  @Lock(LockModeType.PESSIMISTIC_WRITE)
-  public Optional<QrCode> findOneById(Long id);
+  @Modifying
+  @Query(value = "UPDATE qr_code SET scan_count = scan_count + 1 WHERE id = :id AND deleted_at IS NULL", nativeQuery = true)
+  public int incrementScanCountById(@Param("id") Long id);
 
-  public Optional<QrCode> findOneByUrl(String url);
+  public Optional<QrCode> findByIdAndDeletedAtIsNull(Long id);
+
+  public Optional<QrCode> findByUrlAndDeletedAtIsNull(String url);
+
 }
